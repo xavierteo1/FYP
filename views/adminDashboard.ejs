@@ -1,0 +1,1113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Admin Dashboard | Clothes Swap</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- Bootstrap -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <style>
+    :root {
+      --primary: #2D5A4F;
+      --primary-dark: #1F3D34;
+      --secondary: #1A1A1A;
+      --accent: #4A7C6B;
+      --neutral-light: #F5EEE6;
+      --border-light: #E8DED1;
+    }
+
+    body {
+      background-color: #f3f4f7;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;800;900&family=Archivo+Black&display=swap');
+
+    .navbar {
+      position: sticky;
+      top: 0;
+      z-index: 1200;
+      background: rgba(221, 208, 196, 0.95) !important;
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(45, 90, 79, 0.1) !important;
+      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.08);
+      padding: 1.5rem 0 !important;
+      transition: all 0.3s ease;
+    }
+
+    .navbar-brand {
+      font-weight: 900;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      font-size: 1.9rem;
+      background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      font-family: 'Archivo Black', sans-serif;
+      transition: font-size 0.3s ease;
+    }
+
+    .brand-red { color: var(--primary); }
+
+    .nav-link {
+      color: var(--secondary) !important;
+      font-weight: 700;
+      transition: all 0.3s ease;
+      position: relative;
+      font-family: 'Cinzel', serif;
+      font-size: 1.05rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin: 0 0.5rem;
+      display: flex;
+      align-items: center;
+    }
+
+    .nav-link::after {
+      content: '';
+      position: absolute;
+      bottom: -8px;
+      left: 0;
+      width: 0;
+      height: 2.5px;
+      background: var(--primary);
+      transition: width 0.3s ease;
+    }
+
+    .nav-link:hover::after {
+      width: 100%;
+    }
+
+    /* Modal z-index fix to appear above navbar */
+    .modal {
+      z-index: 1300 !important;
+    }
+
+    .modal-backdrop {
+      z-index: 1299 !important;
+    }
+
+    .page-header {
+      margin-top: 1.75rem;
+      margin-bottom: 1.25rem;
+    }
+
+    .admin-card {
+      border-radius: 18px;
+      border: none;
+      background-color: #ffffff;
+      box-shadow: 0 10px 25px rgba(15,23,42,0.08);
+    }
+
+    .stat-number {
+      font-size: 1.6rem;
+      font-weight: 800;
+    }
+
+    .stat-label {
+      font-size: 0.85rem;
+      color: #6b7280;
+    }
+
+    .pill-status {
+      border-radius: 999px;
+      padding: 0.15rem 0.55rem;
+      font-size: 0.75rem;
+      display: inline-block;
+    }
+
+    .pill-submitted { background-color: #e0f2fe; color: #0369a1; }
+    .pill-review    { background-color: #fef9c3; color: #92400e; }
+    .pill-approved  { background-color: #dcfce7; color: #166534; }
+    .pill-rejected  { background-color: #fee2e2; color: #b91c1c; }
+
+    .table-sm td, .table-sm th {
+      padding-top: 0.55rem;
+      padding-bottom: 0.55rem;
+      font-size: 0.85rem;
+      vertical-align: middle;
+    }
+
+    .alert-message { border-radius: 10px; }
+    .doc-link { font-size: 0.82rem; }
+
+    .admin-form { min-width: 260px; }
+    .admin-form select,
+    .admin-form input { font-size: 0.82rem; }
+
+    .lock-note {
+      font-size: 0.78rem;
+      color: rgba(0,0,0,55);
+    }
+
+    .btn-ghost {
+      background: #fff;
+      border: 1px solid rgba(0,0,0,12);
+    }
+    .btn-ghost:hover {
+      background: rgba(0,0,0,03);
+    }
+
+    .type-badge{
+      border-radius: 999px;
+      padding: .12rem .55rem;
+      font-size: .75rem;
+      font-weight: 700;
+      display:inline-block;
+      border: 1px solid rgba(0,0,0,.12);
+      background: #fff;
+    }
+    .type-global{ background:#eef2ff; color:#3730a3; border-color:#c7d2fe; }
+    .type-user{ background:#fff7ed; color:#9a3412; border-color:#fed7aa; }
+
+    /* NEW: autosync indicator */
+    .autosync-pill{
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      border-radius:999px;
+      padding:.18rem .55rem;
+      font-size:.78rem;
+      border:1px solid rgba(0,0,0,.12);
+      background:#f8fafc;
+      color:#334155;
+      user-select:none;
+      cursor:pointer;
+    }
+    .autosync-dot{
+      width:8px;
+      height:8px;
+      border-radius:50%;
+      background:#22c55e;
+    }
+    .autosync-off .autosync-dot{
+      background:#ef4444;
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar navbar-expand-lg navbar-light">
+  <div class="container-fluid px-4">
+    <a class="navbar-brand" href="/adminpage">Clothes <span class="brand-red">Swap</span></a>
+
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="mainNavbar">
+      <ul class="navbar-nav ms-auto mb-2 mb-lg-0" style="display: flex; align-items: center; gap: 0.8rem;">
+        <li class="nav-item"><a class="nav-link" href="/adminpage">Home</a></li>
+
+        <% if (user) { %>
+          <% if (user.role === 'admin') { %>
+            <li class="nav-item"><a class="nav-link active" href="/admin">Admin</a></li>
+          <% } %>
+          <li class="nav-item ms-lg-2"><a class="btn btn-sm" style="background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%); color: white; border: none; border-radius: 10px; font-weight: 700; padding: 0.7rem 1.6rem; transition: all 0.3s ease; box-shadow: 0 4px 12px rgba(45, 90, 79, 0.2); font-size: 0.95rem; font-family: 'Cinzel', serif; letter-spacing: 0.08em; text-transform: uppercase; display: flex; align-items: center;" href="/logout" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 16px rgba(45, 90, 79, 0.3)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 12px rgba(45, 90, 79, 0.2)';">Logout</a></li>
+        <% } else { %>
+          <li class="nav-item ms-lg-2"><a class="btn btn-sm" style="background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%); color: white; border: none; border-radius: 10px; font-weight: 700; padding: 0.7rem 1.6rem; transition: all 0.3s ease; box-shadow: 0 4px 12px rgba(45, 90, 79, 0.2); font-size: 0.95rem; font-family: 'Cinzel', serif; letter-spacing: 0.08em; text-transform: uppercase; display: flex; align-items: center;" href="/login" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 16px rgba(45, 90, 79, 0.3)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 12px rgba(45, 90, 79, 0.2)';">Sign In</a></li>
+        <% } %>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<div class="container">
+
+  <!-- Flash + page messages -->
+  <div class="mt-3">
+    <% if (typeof success_msg !== 'undefined' && success_msg && success_msg.length > 0) { %>
+      <div class="alert alert-success alert-message"><%= success_msg %></div>
+    <% } %>
+    <% if (typeof error_msg !== 'undefined' && error_msg && error_msg.length > 0) { %>
+      <div class="alert alert-danger alert-message"><%= error_msg %></div>
+    <% } %>
+    <% if (typeof message !== 'undefined' && message) { %>
+      <div class="alert alert-info alert-message"><%= message %></div>
+    <% } %>
+  </div>
+
+  <!-- PAGE HEADER -->
+  <div class="page-header d-flex justify-content-between align-items-center">
+    <div>
+      <h3 class="mb-0">Admin Dashboard</h3>
+      <div class="text-muted" style="font-size:0.9rem;">
+        Manage SAHM applications, payout requests and locations.
+      </div>
+    </div>
+    <div class="text-end" style="font-size:0.85rem;">
+      <div><strong>Logged in as:</strong> <%= user ? user.username : 'Admin' %></div>
+    </div>
+  </div>
+
+  <!-- TOP STATS -->
+  <div class="row g-3 mb-4">
+    <div class="col-12 col-md-4">
+      <div class="admin-card p-3 h-100">
+        <div class="stat-number"><%= stats && stats.users ? stats.users.totalUsers : 0 %></div>
+        <div class="stat-label"><a href="/users" class="text-decoration-none text-dark">Total users</a></div>
+      </div>
+    </div>
+    <div class="col-6 col-md-4">
+      <div class="admin-card p-3 h-100">
+        <div class="stat-number"><%= stats && stats.users ? stats.users.sahmUsers : 0 %></div>
+        <div class="stat-label">SAHM users</div>
+      </div>
+    </div>
+    <div class="col-6 col-md-4">
+      <div class="admin-card p-3 h-100">
+        <div class="stat-number"><%= stats && stats.users ? stats.users.adminUsers : 0 %></div>
+        <div class="stat-label">Admin accounts</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SAHM APPLICATION STATS -->
+  <div class="row g-3 mb-4">
+    <div class="col-12 col-md-3">
+      <div class="admin-card p-3 h-100">
+        <div class="stat-number"><%= stats && stats.sahm ? stats.sahm.submitted || 0 : 0 %></div>
+        <div class="stat-label">Submitted</div>
+      </div>
+    </div>
+    <div class="col-12 col-md-3">
+      <div class="admin-card p-3 h-100">
+        <div class="stat-number"><%= stats && stats.sahm ? stats.sahm.under_review || 0 : 0 %></div>
+        <div class="stat-label">Under review</div>
+      </div>
+    </div>
+    <div class="col-12 col-md-3">
+      <div class="admin-card p-3 h-100">
+        <div class="stat-number"><%= stats && stats.sahm ? stats.sahm.approved || 0 : 0 %></div>
+        <div class="stat-label">Approved</div>
+      </div>
+    </div>
+    <div class="col-12 col-md-3">
+      <div class="admin-card p-3 h-100">
+        <div class="stat-number"><%= stats && stats.sahm ? stats.sahm.rejected || 0 : 0 %></div>
+        <div class="stat-label">Rejected</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- LATEST SAHM APPLICATIONS -->
+  <div class="admin-card p-3 mb-4">
+    <div class="d-flex justify-content-between align-items-center mb-2">
+      <h5 class="mb-0">Latest SAHM Applications</h5>
+      <small class="text-muted">Showing most recent 20 applications</small>
+    </div>
+
+    <% if (applications && applications.length > 0) { %>
+      <div class="table-responsive">
+        <table class="table table-sm align-middle mb-0">
+          <thead class="table-light">
+            <tr>
+              <th style="width:110px;">App ID</th>
+              <th>User</th>
+              <th>Email</th>
+              <th style="width:140px;">Documents</th>
+              <th style="width:160px;">Submitted</th>
+              <th style="width:330px;">Admin action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% applications.forEach(app => { %>
+              <%
+                const isLocked = app.status === 'approved';
+                const safeComment = (app.admin_comment || '').replace(/"/g, '&quot;');
+              %>
+              <tr>
+                <td>#<%= app.application_id %></td>
+                <td>
+                  <a href="/users/<%= app.user_id %>"><%= app.username %></a>
+                  <div class="text-muted" style="font-size:0.8rem;">User ID: <%= app.user_id %></div>
+                </td>
+                <td><%= app.email %></td>
+                <td>
+                  <% if (app.document_url) { %>
+                    <a class="doc-link" href="<%= app.document_url %>" target="_blank">View</a>
+                  <% } else { %>
+                    <span class="text-muted">—</span>
+                  <% } %>
+                </td>
+                <td>
+                  <%= app.created_at ? (app.created_at.toLocaleString ? app.created_at.toLocaleString() : app.created_at) : '' %>
+                </td>
+
+                <td>
+                  <form
+                    action="/admin/sahm-applications/<%= app.application_id %>/status"
+                    method="POST"
+                    class="js-admin-form admin-form"
+                    data-locked="<%= isLocked ? '1' : '0' %>"
+                    data-original-status="<%= app.status %>"
+                    data-original-comment="<%= safeComment %>"
+                  >
+                    <input type="hidden" name="unlock_edit" value="0" class="js-unlock-flag" />
+
+                    <div class="d-flex gap-2">
+                      <select
+                        name="status"
+                        class="form-select form-select-sm js-status"
+                        <%= isLocked ? 'disabled' : '' %>
+                      >
+                        <option value="submitted" <%= app.status === 'submitted' ? 'selected' : '' %>>submitted</option>
+                        <option value="under_review" <%= app.status === 'under_review' ? 'selected' : '' %>>under_review</option>
+                        <option value="approved" <%= app.status === 'approved' ? 'selected' : '' %>>approved</option>
+                        <option value="rejected" <%= app.status === 'rejected' ? 'selected' : '' %>>rejected</option>
+                      </select>
+
+                      <button type="submit" class="btn btn-sm btn-danger js-save-btn <%= isLocked ? 'd-none' : '' %>">
+                        Save
+                      </button>
+
+                      <% if (isLocked) { %>
+                        <button type="button" class="btn btn-sm btn-ghost js-edit-btn">
+                          Edit
+                        </button>
+                        <button type="button" class="btn btn-sm btn-outline-secondary d-none js-cancel-btn">
+                          Cancel
+                        </button>
+                      <% } else { %>
+                        <button type="button" class="btn btn-sm btn-outline-secondary d-none js-cancel-btn">
+                          Cancel
+                        </button>
+                      <% } %>
+                    </div>
+
+                    <div class="mt-2">
+                      <input
+                        type="text"
+                        name="admin_comment"
+                        class="form-control form-control-sm js-comment"
+                        placeholder="Admin comment (optional)"
+                        value="<%= safeComment %>"
+                        <%= isLocked ? 'disabled' : '' %>
+                      />
+
+                      <% if (isLocked) { %>
+                        <div class="lock-note">
+                          This application is <b>Approved</b> and locked. Click <b>Edit</b> if you really need to change it.
+                        </div>
+                      <% } else { %>
+                        <small class="text-muted">
+                          Tip: Approving will set the user role to <b>sahm</b>.
+                        </small>
+                      <% } %>
+                    </div>
+                  </form>
+                </td>
+              </tr>
+            <% }) %>
+          </tbody>
+        </table>
+      </div>
+    <% } else { %>
+      <p class="text-muted mb-0">No SAHM applications found.</p>
+    <% } %>
+  </div>
+
+  <!-- SAHM PAYOUT REQUESTS -->
+  <div class="admin-card p-3 mb-4">
+    <div class="d-flex justify-content-between align-items-center mb-2">
+      <div>
+        <h5 class="mb-0">SAHM Payout Requests</h5>
+        <div class="text-muted" style="font-size:0.85rem;">
+          Admin approves payout requests. Approval triggers PayPal Sandbox payout.
+        </div>
+      </div>
+      <div class="text-end" style="font-size:0.82rem;">
+        <span class="me-2">Pending: <b><%= stats && stats.payouts ? (stats.payouts.pending || 0) : 0 %></b></span>
+        <span class="me-2">Processing: <b><%= stats && stats.payouts ? (stats.payouts.processing || 0) : 0 %></b></span>
+        <span class="me-2">Paid: <b><%= stats && stats.payouts ? (stats.payouts.paid || 0) : 0 %></b></span>
+        <span class="ms-2 autosync-pill" id="autoSyncToggle" title="Click to toggle auto-sync (every 60s)">
+          <span class="autosync-dot"></span>
+          <span id="autoSyncText">Auto-sync: ON</span>
+        </span>
+      </div>
+    </div>
+
+    <% if (payouts && payouts.length > 0) { %>
+      <div class="table-responsive">
+        <table class="table table-sm align-middle mb-0">
+          <thead class="table-light">
+            <tr>
+              <th style="width:90px;">ID</th>
+              <th>SAHM</th>
+              <th style="width:120px;">Amount</th>
+              <th style="width:200px;">Receiver</th>
+              <th style="width:130px;">Status</th>
+              <th style="width:260px;" class="text-end">Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% payouts.forEach(p => { %>
+              <tr>
+                <td>#<%= p.payout_id %></td>
+                <td>
+                  <div class="fw-semibold"><%= p.sahm_username || ('User ' + p.sahm_user_id) %></div>
+                  <div class="text-muted" style="font-size:0.78rem;">SAHM ID: <%= p.sahm_user_id %></div>
+                </td>
+                <td>
+                  <div class="fw-semibold"><%= Number(p.total_amount || 0).toFixed(2) %> <%= p.currency || 'SGD' %></div>
+                </td>
+                <td style="font-size:0.85rem;">
+                  <%= p.receiver_email || p.sahm_paypal_email || '—' %>
+                </td>
+                <td>
+                  <% 
+                    const st = (p.status || '').toLowerCase();
+                    const badge =
+                      st === 'pending' ? 'bg-warning text-dark' :
+                      st === 'approved' ? 'bg-info text-dark' :
+                      st === 'processing' ? 'bg-primary' :
+                      st === 'paid' ? 'bg-success' :
+                      st === 'rejected' ? 'bg-secondary' :
+                      st === 'failed' ? 'bg-danger' : 'bg-light text-dark';
+                  %>
+                  <span class="badge <%= badge %>"><%= p.status %></span>
+                </td>
+               
+                <td class="text-end">
+                  <% if ((p.status || '').toLowerCase() === 'pending') { %>
+                    <form action="/admin/payouts/<%= p.payout_id %>/approve" method="POST" class="d-inline" onsubmit="return confirm('Approve and send PayPal payout for #<%= p.payout_id %>?');">
+                      <button type="submit" class="btn btn-sm btn-success">Approve</button>
+                    </form>
+
+                    <button type="button" class="btn btn-sm btn-outline-danger" data-bs-toggle="modal" data-bs-target="#rejectModal-<%= p.payout_id %>">
+                      Reject
+                    </button>
+
+                    <!-- Reject modal -->
+                    <div class="modal fade" id="rejectModal-<%= p.payout_id %>" tabindex="-1" aria-hidden="true">
+                      <div class="modal-dialog">
+                        <div class="modal-content">
+                          <div class="modal-header">
+                            <h5 class="modal-title">Reject payout #<%= p.payout_id %></h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                          </div>
+                          <form action="/admin/payouts/<%= p.payout_id %>/reject" method="POST">
+                            <div class="modal-body">
+                              <label class="form-label" style="font-size:0.85rem;">Reason (optional)</label>
+                              <input type="text" name="reject_reason" class="form-control" maxlength="255" placeholder="e.g. Please update PayPal email / mismatch amount" />
+                            </div>
+                            <div class="modal-footer">
+                              <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+                              <button type="submit" class="btn btn-danger">Reject</button>
+                            </div>
+                          </form>
+                        </div>
+                      </div>
+                    </div>
+
+                  <% } else if ((p.status || '').toLowerCase() === 'processing' && p.paypal_payout_batch_id) { %>
+                    <form
+                      action="/admin/payouts/<%= p.payout_id %>/sync"
+                      method="POST"
+                      class="d-inline js-sync-payout"
+                      data-payout-id="<%= p.payout_id %>"
+                    >
+                      <button type="submit" class="btn btn-sm btn-outline-primary">Sync Status</button>
+                    </form>
+                    <div class="text-muted mt-1" style="font-size:0.78rem;">
+                      Auto-sync runs every 60s.
+                    </div>
+                  <% } else { %>
+                    <span class="text-muted" style="font-size:0.85rem;">—</span>
+                  <% } %>
+                </td>
+              </tr>
+            <% }) %>
+          </tbody>
+        </table>
+      </div>
+    <% } else { %>
+      <p class="text-muted mb-0">No payout requests yet.</p>
+    <% } %>
+  </div>
+
+
+
+  <!-- SWAP /HELP CASES -->
+  <div class="admin-card p-3 mb-4">
+    <div class="d-flex justify-content-between align-items-center mb-2">
+      <div>
+        <h5 class="mb-0">Swap /help Cases</h5>
+        <div class="text-muted" style="font-size:0.85rem;">
+          Users can report scam or request cancel via chat. While a case is open, commands + payment are frozen.
+        </div>
+      </div>
+      <div class="text-end" style="font-size:0.82rem;">
+        <% 
+          const caseCounts = { open:0, under_review:0, resolved:0, rejected:0 };
+          (swapCases || []).forEach(c => {
+            const s = String(c.status || '').toLowerCase();
+            if (caseCounts[s] !== undefined) caseCounts[s] += 1;
+          });
+        %>
+        <span class="me-2">Open: <b><%= caseCounts.open %></b></span>
+        <span class="me-2">Under review: <b><%= caseCounts.under_review %></b></span>
+        <span class="me-2">Resolved: <b><%= caseCounts.resolved %></b></span>
+        <span class="me-2">Rejected: <b><%= caseCounts.rejected %></b></span>
+        <span class="ms-2 autosync-pill" id="autoSyncRefundToggle" title="Click to toggle auto-sync for refunds (every 60s)">
+          <span class="autosync-dot"></span>
+          <span id="autoSyncRefundText">Refund auto-sync: ON</span>
+        </span>
+      </div>
+    </div>
+
+    <% if (swapCases && swapCases.length > 0) { %>
+      <div class="table-responsive">
+        <table class="table table-sm align-middle mb-0">
+          <thead class="table-light">
+            <tr>
+              <th style="width:90px;">Case</th>
+              <th style="width:140px;">Type</th>
+              <th>Match / Chat</th>
+              <th style="width:180px;">Opened By</th>
+              <th style="width:160px;">Created</th>
+              <th style="width:130px;">Status</th>
+              <th style="width:260px;" class="text-end">Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% swapCases.forEach(c => { 
+              const s = String(c.status || '').toLowerCase();
+              const typeNice = String(c.case_type || '').replace(/_/g,' ');
+              const badge =
+                s === 'open' ? 'bg-warning text-dark' :
+                s === 'under_review' ? 'bg-primary' :
+                s === 'resolved' ? 'bg-success' :
+                s === 'rejected' ? 'bg-secondary' : 'bg-light text-dark';
+            %>
+              <tr>
+                <td>#<%= c.case_id %></td>
+                <td style="font-size:0.85rem;">
+                  <span class="badge" style="background:rgba(220,38,38,.1);border:1px solid rgba(220,38,38,.2);color:#991b1b;">
+                    <%= typeNice %>
+                  </span>
+                </td>
+                <td>
+                  <div class="fw-semibold" style="font-size:0.9rem;">
+                    Match #<%= c.match_id %>
+                    <% if (c.chat_id) { %>
+                      <span class="text-muted">•</span>
+                      <a href="/admin/chats/<%= c.chat_id %>" class="text-decoration-none">Open chat</a>
+                    <% } %>
+                  </div>
+                  <div class="text-muted" style="font-size:0.78rem;">
+                    <%= (c.reason || '').length > 90 ? (c.reason.slice(0,90) + '…') : (c.reason || '—') %>
+                  </div>
+                </td>
+                <td>
+                  <div class="fw-semibold"><%= c.opened_by_username || ('User ' + c.opened_by_user_id) %></div>
+                  <div class="text-muted" style="font-size:0.78rem;">User ID: <%= c.opened_by_user_id %></div>
+                </td>
+                <td style="font-size:0.85rem;">
+                  <%= c.created_at ? new Date(c.created_at).toLocaleString('en-SG') : '—' %>
+                </td>
+                <td>
+                  <span class="badge <%= badge %>"><%= c.status %></span>
+                </td>
+                <td class="text-end">
+                  <% if (s === 'open') { %>
+                    <form action="/admin/swap-cases/<%= c.case_id %>/review" method="POST" class="d-inline" onsubmit="return confirm('Mark case #<%= c.case_id %> as under review?');">
+                      <button type="submit" class="btn btn-sm btn-outline-primary">Mark under review</button>
+                    </form>
+
+                    <button type="button" class="btn btn-sm btn-success" data-bs-toggle="modal" data-bs-target="#resolveCaseModal-<%= c.case_id %>">
+                      Resolve
+                    </button>
+                  <% } else if (s === 'under_review') { %>
+                    <button type="button" class="btn btn-sm btn-success" data-bs-toggle="modal" data-bs-target="#resolveCaseModal-<%= c.case_id %>">
+                      Resolve
+                    </button>
+                  <% } else { %>
+                    <span class="text-muted" style="font-size:0.85rem;">—</span>
+                  <% } %>
+
+                  <!-- Resolve modal -->
+                  <div class="modal fade" id="resolveCaseModal-<%= c.case_id %>" tabindex="-1" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered modal-lg">
+                      <div class="modal-content">
+                        <div class="modal-header">
+                          <h5 class="modal-title">Resolve case #<%= c.case_id %></h5>
+                          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        </div>
+                        <form action="/admin/swap-cases/<%= c.case_id %>/resolve" method="POST">
+                          <div class="modal-body">
+                            <div class="row g-3">
+                              <div class="col-md-4">
+                                <label class="form-label" style="font-size:0.85rem;">Decision</label>
+                                <select name="decision" class="form-select">
+                                  <option value="resolve">Resolve (approve)</option>
+                                  <option value="reject">Reject</option>
+                                </select>
+                                <div class="tiny mt-2">
+                                  Resolve = admin accepts the request. If payments exist, refunds will be handled.
+                                </div>
+                              </div>
+                              <div class="col-md-8">
+                                <label class="form-label" style="font-size:0.85rem;">Admin comment (sent by email)</label>
+                                <input type="text" name="admin_comment" class="form-control" maxlength="255" placeholder="Your explanation to both users" />
+                              </div>
+
+                              <div class="col-12">
+                                <div class="border rounded-4 p-3 bg-light">
+                                  <div class="fw-semibold mb-1" style="font-size:0.9rem;">Email (configurable)</div>
+                                  <div class="row g-2">
+                                    <div class="col-12">
+                                      <label class="form-label" style="font-size:0.82rem;">Subject (optional)</label>
+                                      <input type="text" name="email_subject" class="form-control form-control-sm" maxlength="160" placeholder="e.g. Update on your /help request" />
+                                    </div>
+                                    <div class="col-12">
+                                      <label class="form-label" style="font-size:0.82rem;">Message (optional)</label>
+                                      <textarea name="email_body" class="form-control form-control-sm" rows="4" maxlength="2000" placeholder="Write the email content to both users (we’ll include: opened by user, case type, match id, etc.)."></textarea>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="modal-footer">
+                            <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-success" onclick="return confirm('Resolve case #<%= c.case_id %>? This is irreversible.');">Submit</button>
+                          </div>
+                        </form>
+                      </div>
+                    </div>
+                  </div>
+                </td>
+              </tr>
+            <% }) %>
+          </tbody>
+        </table>
+      </div>
+    <% } else { %>
+      <p class="text-muted mb-0">No swap cases yet.</p>
+    <% } %>
+  </div>
+
+  <!-- SWAP REFUNDS -->
+  <div class="admin-card p-3 mb-4">
+    <div class="d-flex justify-content-between align-items-center mb-2">
+      <div>
+        <h5 class="mb-0">Swap Refunds</h5>
+        <div class="text-muted" style="font-size:0.85rem;">
+          Tracks refund attempts to PayPal Sandbox for both users (if applicable).
+        </div>
+      </div>
+      <div class="text-end">
+        <form action="/admin/swap-refunds/sync" method="POST" class="d-inline js-sync-refunds">
+          <button type="submit" class="btn btn-sm btn-outline-primary">Sync refunds now</button>
+        </form>
+      </div>
+    </div>
+
+    <% if (swapRefunds && swapRefunds.length > 0) { %>
+      <div class="table-responsive">
+        <table class="table table-sm align-middle mb-0">
+          <thead class="table-light">
+            <tr>
+              <th style="width:95px;">Refund</th>
+              <th style="width:90px;">Case</th>
+              <th>Match / User</th>
+              <th style="width:120px;">Amount</th>
+              <th style="width:140px;">Status</th>
+              <th style="width:180px;">PayPal ID</th>
+              <th style="width:170px;">Created</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% swapRefunds.forEach(r => { 
+              const rs = String(r.status || '').toLowerCase();
+              const rBadge =
+                rs === 'processing' ? 'bg-primary' :
+                rs === 'refunded' ? 'bg-success' :
+                rs === 'failed' ? 'bg-danger' :
+                rs === 'pending' ? 'bg-warning text-dark' : 'bg-secondary';
+            %>
+              <tr>
+                <td>#<%= r.refund_id %></td>
+                <td>#<%= r.case_id %></td>
+                <td>
+                  <div class="fw-semibold" style="font-size:0.9rem;">Match #<%= r.match_id %></div>
+                  <div class="text-muted" style="font-size:0.78rem;">User: <%= r.user_username || ('User ' + r.user_id) %> (ID: <%= r.user_id %>)</div>
+                </td>
+                <td><%= Number(r.amount || 0).toFixed(2) %> <%= r.currency || 'SGD' %></td>
+                <td><span class="badge <%= rBadge %>"><%= r.status %></span></td>
+                <td style="font-size:0.85rem;"><%= r.paypal_refund_id || '—' %></td>
+                <td style="font-size:0.85rem;"><%= r.created_at ? new Date(r.created_at).toLocaleString('en-SG') : '—' %></td>
+              </tr>
+            <% }) %>
+          </tbody>
+        </table>
+      </div>
+    <% } else { %>
+      <p class="text-muted mb-0">No refunds yet.</p>
+    <% } %>
+  </div>
+
+  <!-- COMMENTS MANAGEMENT -->
+  <div class="admin-card p-3 mb-4">
+    <div class="d-flex justify-content-between align-items-center mb-2">
+      <div>
+        <h5 class="mb-0">Recent Comments</h5>
+        <div class="text-muted" style="font-size:0.85rem;">
+          View and delete comments from OOTD posts .
+        </div>
+      </div>
+    </div>
+
+    <% if (comments && comments.length > 0) { %>
+      <div class="table-responsive">
+        <table class="table table-sm align-middle mb-0">
+          <thead class="table-light">
+            <tr>
+              <th style="width:80px;">Comment</th>
+              <th style="width:80px;">Post</th>
+              <th>User & Comment</th>
+              <th style="width:140px;">Created</th>
+              <th style="width:100px;">Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% comments.forEach(comment => { %>
+              <tr>
+                <td>#<%= comment.comment_id %></td>
+                <td>#<%= comment.post_id %></td>
+                <td>
+                  <div class="fw-semibold" style="font-size:0.9rem;"><%= comment.username %></div>
+                  <div style="font-size:0.8rem; color:#666;">
+                    <%= comment.comment_text ? comment.comment_text.substring(0, 60) + (comment.comment_text.length > 60 ? '...' : '') : '(No text)' %>
+                  </div>
+                </td>
+                <td style="font-size:0.85rem;"><%= comment.created_at ? new Date(comment.created_at).toLocaleString('en-SG') : '—' %></td>
+                <td>
+                  <form action="/admin/comments/<%= comment.comment_id %>/delete" method="POST" style="display: inline;" onsubmit="return confirm('Delete this comment? This action cannot be undone.');">
+                    <button type="submit" class="btn btn-sm btn-outline-danger">Delete</button>
+                  </form>
+                </td>
+              </tr>
+            <% }) %>
+          </tbody>
+        </table>
+      </div>
+    <% } else { %>
+      <p class="text-muted mb-0">No comments yet.</p>
+    <% } %>
+  </div>
+
+  <!-- LOCATIONS MANAGEMENT -->
+  <div class="admin-card p-3 mb-5">
+    <div class="d-flex justify-content-between align-items-center mb-2">
+      <div>
+        <h5 class="mb-0">Locations</h5>
+        <div class="text-muted" style="font-size:0.85rem;">
+          Admin can add global locations. SAHMs can also add their own locations (visible here).
+        </div>
+      </div>
+    </div>
+
+    <div class="row g-3">
+      <!-- Add location (Global/admin-managed) -->
+      <div class="col-12 col-lg-5">
+        <div class="border rounded-4 p-3 bg-light">
+          <h6 class="mb-2">Add global location</h6>
+
+          <form action="/admin/locations/add" method="POST" class="row g-2">
+            <div class="col-12">
+              <label class="form-label mb-1" style="font-size:0.82rem;">Label *</label>
+              <input type="text" name="label" class="form-control form-control-sm" maxlength="120" required placeholder="e.g. Woodlands MRT / Orchard Gateway" />
+            </div>
+
+            <div class="col-12">
+              <label class="form-label mb-1" style="font-size:0.82rem;">Address line</label>
+              <input type="text" name="address_line" class="form-control form-control-sm" maxlength="255" placeholder="Optional" />
+            </div>
+
+            <div class="col-6">
+              <label class="form-label mb-1" style="font-size:0.82rem;">City</label>
+              <input type="text" name="city" class="form-control form-control-sm" maxlength="120" placeholder="Optional" />
+            </div>
+
+            <div class="col-6">
+              <label class="form-label mb-1" style="font-size:0.82rem;">Postal code</label>
+              <input type="text" name="postal_code" class="form-control form-control-sm" maxlength="20" placeholder="Optional" />
+            </div>
+
+            <div class="col-6">
+              <label class="form-label mb-1" style="font-size:0.82rem;">Latitude</label>
+              <input type="text" name="latitude" class="form-control form-control-sm" placeholder="Optional" />
+            </div>
+
+            <div class="col-6">
+              <label class="form-label mb-1" style="font-size:0.82rem;">Longitude</label>
+              <input type="text" name="longitude" class="form-control form-control-sm" placeholder="Optional" />
+            </div>
+
+            <div class="col-12 d-grid mt-1">
+              <button class="btn btn-danger btn-sm" type="submit">Add location</button>
+            </div>
+
+            <div class="text-muted" style="font-size:0.78rem;">
+              Tip: Leave lat/lng empty if you don’t need distance checks.
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- Locations table -->
+      <div class="col-12 col-lg-7">
+        <div class="border rounded-4 p-3">
+          <div class="d-flex justify-content-between align-items-center mb-2">
+            <h6 class="mb-0">All locations</h6>
+            <div class="text-muted" style="font-size:0.78rem;">
+              Showing up to 300 latest.
+            </div>
+          </div>
+
+          <% if (locations && locations.length > 0) { %>
+            <div class="table-responsive">
+              <table class="table table-sm align-middle mb-0">
+                <thead class="table-light">
+                  <tr>
+                    <th style="width:90px;">ID</th>
+                    <th>Label</th>
+                    <th style="width:120px;">Type</th>
+                    <th style="width:160px;">Owner</th>
+                    <th style="width:120px;">Postal</th>
+                    <th style="width:110px;" class="text-end">Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <% locations.forEach(loc => { %>
+                    <tr>
+                      <td>#<%= loc.location_id %></td>
+                      <td>
+                        <div class="fw-semibold"><%= loc.label %></div>
+                        <div class="text-muted" style="font-size:0.78rem;">
+                          <%= loc.address_line || '' %>
+                          <%= loc.city ? (loc.address_line ? ', ' : '') + loc.city : '' %>
+                        </div>
+                      </td>
+                      <td>
+                        <% if (!loc.user_id) { %>
+                          <span class="type-badge type-global">GLOBAL</span>
+                        <% } else { %>
+                          <span class="type-badge type-user">USER</span>
+                        <% } %>
+                      </td>
+                      <td style="font-size:0.85rem;">
+                        <%= loc.owner_username || '—' %>
+                      </td>
+                      <td><%= loc.postal_code || '—' %></td>
+                      <td class="text-end">
+                        <% if (!loc.user_id) { %>
+                          <form action="/admin/locations/<%= loc.location_id %>/delete" method="POST" class="d-inline" onsubmit="return confirm('Delete this global location?');">
+                            <button type="submit" class="btn btn-sm btn-outline-danger">Delete</button>
+                          </form>
+                        <% } else { %>
+                          <span class="text-muted" style="font-size:0.82rem;">—</span>
+                        <% } %>
+                      </td>
+                    </tr>
+                  <% }) %>
+                </tbody>
+              </table>
+            </div>
+          <% } else { %>
+            <p class="text-muted mb-0">No locations found.</p>
+          <% } %>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+(() => {
+  // Existing lock/unlock behavior for SAHM applications
+  const forms = document.querySelectorAll('.js-admin-form');
+  forms.forEach(form => {
+    const locked = form.dataset.locked === '1';
+    if (!locked) return;
+
+    const statusEl = form.querySelector('.js-status');
+    const commentEl = form.querySelector('.js-comment');
+    const saveBtn = form.querySelector('.js-save-btn');
+    const editBtn = form.querySelector('.js-edit-btn');
+    const cancelBtn = form.querySelector('.js-cancel-btn');
+    const unlockFlag = form.querySelector('.js-unlock-flag');
+
+    const originalStatus = form.dataset.originalStatus;
+    const originalComment = form.dataset.originalComment || '';
+
+    editBtn.addEventListener('click', () => {
+      statusEl.disabled = false;
+      commentEl.disabled = false;
+
+      saveBtn.classList.remove('d-none');
+      cancelBtn.classList.remove('d-none');
+      editBtn.classList.add('d-none');
+
+      if (unlockFlag) unlockFlag.value = '1';
+    });
+
+    cancelBtn.addEventListener('click', () => {
+      statusEl.value = originalStatus;
+      commentEl.value = originalComment;
+
+      statusEl.disabled = true;
+      commentEl.disabled = true;
+
+      saveBtn.classList.add('d-none');
+      cancelBtn.classList.add('d-none');
+      editBtn.classList.remove('d-none');
+
+      if (unlockFlag) unlockFlag.value = '0';
+    });
+  });
+
+  // ============================
+  // NEW: Auto-sync processing payouts every 60s
+  // ============================
+  const toggle = document.getElementById('autoSyncToggle');
+  const toggleText = document.getElementById('autoSyncText');
+
+  const rToggle = document.getElementById('autoSyncRefundToggle');
+  const rToggleText = document.getElementById('autoSyncRefundText');
+
+  let autoSyncEnabled = true;
+  try {
+    const saved = localStorage.getItem('admin_auto_sync_payouts');
+    if (saved === '0') autoSyncEnabled = false;
+  } catch (e) {}
+
+  let autoSyncRefundEnabled = true;
+  try {
+    const savedR = localStorage.getItem('admin_auto_sync_refunds');
+    if (savedR === '0') autoSyncRefundEnabled = false;
+  } catch (e) {}
+
+  function renderAutoSync() {
+    if (toggle) {
+      if (autoSyncEnabled) {
+        toggle.classList.remove('autosync-off');
+        if (toggleText) toggleText.textContent = 'Auto-sync: ON';
+      } else {
+        toggle.classList.add('autosync-off');
+        if (toggleText) toggleText.textContent = 'Auto-sync: OFF';
+      }
+    }
+
+    if (rToggle) {
+      if (autoSyncRefundEnabled) {
+        rToggle.classList.remove('autosync-off');
+        if (rToggleText) rToggleText.textContent = 'Refund auto-sync: ON';
+      } else {
+        rToggle.classList.add('autosync-off');
+        if (rToggleText) rToggleText.textContent = 'Refund auto-sync: OFF';
+      }
+    }
+  }
+
+  if (toggle) {
+    renderAutoSync();
+    toggle.addEventListener('click', () => {
+      autoSyncEnabled = !autoSyncEnabled;
+      try {
+        localStorage.setItem('admin_auto_sync_payouts', autoSyncEnabled ? '1' : '0');
+      } catch (e) {}
+      renderAutoSync();
+    });
+  }
+
+  if (rToggle) {
+    renderAutoSync();
+    rToggle.addEventListener('click', () => {
+      autoSyncRefundEnabled = !autoSyncRefundEnabled;
+      try {
+        localStorage.setItem('admin_auto_sync_refunds', autoSyncRefundEnabled ? '1' : '0');
+      } catch (e) {}
+      renderAutoSync();
+    });
+  }
+
+  let syncing = false;
+
+  async function postNoBody(url) {
+    const resp = await fetch(url, {
+      method: 'POST',
+      credentials: 'same-origin',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded'
+      },
+      body: ''
+    });
+    return resp;
+  }
+
+  async function syncProcessingPayoutsAndRefresh() {
+    if (!autoSyncEnabled && !autoSyncRefundEnabled) return;
+    if (syncing) return;
+
+    const payoutForms = Array.from(document.querySelectorAll('form.js-sync-payout'));
+    const refundForms = Array.from(document.querySelectorAll('form.js-sync-refunds'));
+
+    const hasAny = (autoSyncEnabled && payoutForms.length) || (autoSyncRefundEnabled && refundForms.length);
+    if (!hasAny) return;
+
+    // Don't auto-sync if any modal is open
+    const modals = document.querySelectorAll('.modal.show');
+    if (modals.length > 0) return;
+
+    syncing = true;
+
+    if (autoSyncEnabled) {
+      for (const f of payoutForms) {
+        try {
+          // Will trigger backend to flip processing -> paid if PayPal item is SUCCESS/UNCLAIMED
+          await postNoBody(f.action);
+        } catch (e) {
+          console.warn('Auto-sync payouts failed for:', f.action, e);
+        }
+      }
+    }
+
+    if (autoSyncRefundEnabled) {
+      for (const f of refundForms) {
+        try {
+          await postNoBody(f.action);
+        } catch (e) {
+          console.warn('Auto-sync refunds failed for:', f.action, e);
+        }
+      }
+    }
+
+    syncing = false;
+
+    // Refresh to show latest statuses
+    setTimeout(() => window.location.reload(), 600);
+  }
+
+  // Run once shortly after page loads (helps “stuck processing” quickly)
+  setTimeout(syncProcessingPayoutsAndRefresh, 8000);
+
+  // Then every 60 seconds
+  setInterval(syncProcessingPayoutsAndRefresh, 60000);
+})();
+</script>
+
+<!-- AI Chatbot Widget -->
+<%- include('ai-chatbot-widget') %>
+
+</body>
+</html>

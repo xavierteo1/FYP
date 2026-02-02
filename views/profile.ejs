@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>My Profile | Clothes Swap</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Global Design System -->
+    <link href="/css/global-design.css" rel="stylesheet">
+
+    <style>
+        /* PROFILE HEADER */
+        .profile-header {
+            margin-top: 2rem;
+            margin-bottom: 2rem;
+            border-radius: 20px;
+            padding: 2rem;
+            background: linear-gradient(135deg, rgba(45, 90, 79, 0.08) 0%, rgba(74, 124, 107, 0.08) 100%);
+            border: 1px solid rgba(45, 90, 79, 0.15);
+            box-shadow: 0 8px 32px rgba(45, 90, 79, 0.08);
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        .profile-photo {
+            width: 120px;
+            height: 120px;
+            border-radius: 999px;
+            object-fit: cover;
+            border: 4px solid var(--primary);
+            background-color: #fff;
+            flex-shrink: 0;
+            box-shadow: 0 8px 24px rgba(45, 90, 79, 0.25);
+        }
+
+        .profile-initial {
+            width: 120px;
+            height: 120px;
+            border-radius: 999px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            font-weight: 900;
+            border: 4px solid white;
+            flex-shrink: 0;
+            box-shadow: 0 8px 24px rgba(45, 90, 79, 0.25);
+        }
+
+        .profile-main {
+            flex: 1;
+        }
+
+        .profile-username {
+            font-size: 1.8rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin: 0;
+        }
+
+        .profile-meta {
+            font-size: 0.85rem;
+            color: #6b7280;
+            margin-top: 0.5rem;
+        }
+
+        .profile-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+        }
+
+        .pill-link {
+            border-radius: 999px;
+            padding: 0.4rem 1rem;
+            font-size: 0.8rem;
+            border: 1px solid rgba(45, 90, 79, 0.2);
+            background-color: white;
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.2s ease;
+        }
+
+        .pill-link:hover {
+            background: linear-gradient(135deg, rgba(45, 90, 79, 0.1) 0%, rgba(74, 124, 107, 0.1) 100%);
+            border-color: var(--primary);
+            color: var(--primary);
+            text-decoration: none;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(45, 90, 79, 0.15);
+        }
+
+        .pill-link-red {
+            border-radius: 999px;
+            padding: 0.4rem 1rem;
+            font-size: 0.8rem;
+            border: none;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+            color: white;
+            font-weight: 600;
+            transition: all 0.2s ease;
+            text-decoration: none;
+        }
+
+        .pill-link-red:hover {
+            transform: translateY(-2px);
+            color: white;
+            text-decoration: none;
+            box-shadow: 0 6px 16px rgba(45, 90, 79, 0.25);
+        }
+
+        /* STATS */
+        .stats-card {
+            border-radius: 16px;
+            border: 1px solid rgba(45, 90, 79, 0.15);
+            background: white;
+            box-shadow: 0 8px 24px rgba(45, 90, 79, 0.08);
+            padding: 1.25rem;
+            text-align: center;
+        }
+
+        .stat-number {
+            font-weight: 900;
+            font-size: 1.5rem;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .stat-label {
+            font-size: 0.8rem;
+            color: #6b7280;
+            font-weight: 600;
+            margin-top: 0.4rem;
+        }
+
+        /* SECTION TITLES */
+        .section-title {
+            font-size: 1.2rem;
+            font-weight: 900;
+            color: var(--secondary);
+            margin-top: 2rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .section-subtitle {
+            font-size: 0.9rem;
+            color: #6b7280;
+            margin-bottom: 1.25rem;
+            font-weight: 500;
+        }
+
+        /* OOTD CARD */
+        .ootd-card {
+            border-radius: 16px;
+            border: 1px solid rgba(45, 90, 79, 0.1);
+            box-shadow: 0 8px 24px rgba(45, 90, 79, 0.08);
+            overflow: hidden;
+            background-color: white;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .ootd-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 16px 40px rgba(45, 90, 79, 0.15);
+            border-color: rgba(45, 90, 79, 0.2);
+            cursor: pointer;
+        }
+
+        /* match clothing item style: no crop, contain, max-height */
+        .ootd-image-wrapper {
+            background: linear-gradient(135deg, #f9fafb 0%, #f3f4f6 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+        }
+
+        .ootd-image {
+            width: 100%;
+            max-height: 320px;
+            height: auto;
+            object-fit: contain;
+        }
+
+        .ootd-caption {
+            font-size: 0.9rem;
+            color: #374151;
+            font-weight: 500;
+            line-height: 1.5;
+        }
+
+        .pill-tag {
+            font-size: 0.7rem;
+            border-radius: 999px;
+            padding: 0.25rem 0.7rem;
+            background-color: #f1f1f1;
+            color: #555;
+            font-weight: 600;
+            border: 1px solid #e5e7eb;
+        }
+
+        .pill-tag-private {
+            background: linear-gradient(135deg, #ffe4e6 0%, #f8d7da 100%);
+            color: #9f1239;
+            border-color: #f5c2c7;
+        }
+
+        .pill-tag-public {
+            background: linear-gradient(135deg, #d1e7dd 0%, #c3e6cb 100%);
+            color: #0f5132;
+            border-color: #badbcc;
+        }
+
+        .ootd-footer {
+            padding: 0.75rem 1rem;
+            border-top: 1px solid rgba(45, 90, 79, 0.1);
+            font-size: 0.78rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: linear-gradient(90deg, rgba(248,250,252,0.5), rgba(248,250,252,0.5));
+        }
+
+        .ootd-stats {
+            padding: 0.85rem 1rem;
+            border-bottom: 1px solid rgba(45, 90, 79, 0.1);
+            display: flex;
+            gap: 1.5rem;
+            font-size: 0.85rem;
+            color: #6b7280;
+            flex-wrap: wrap;
+        }
+
+        .ootd-stat-item {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            font-weight: 600;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: #6c757d;
+        }
+
+        .empty-state h5 {
+            font-weight: 700;
+            color: var(--secondary);
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .empty-state p {
+            font-size: 0.95rem;
+        }
+
+        .btn-sm-rounded {
+            border-radius: 999px;
+            font-size: 0.78rem;
+            padding: 0.3rem 0.85rem;
+            font-weight: 600;
+            transition: all 0.2s ease;
+        }
+
+        .btn-outline-danger-custom {
+            border-radius: 999px;
+            font-size: 0.78rem;
+            font-weight: 600;
+            border-color: #dc2626;
+            color: #dc2626;
+            transition: all 0.2s ease;
+        }
+
+        .btn-outline-danger-custom:hover {
+            background-color: #dc2626;
+            border-color: #dc2626;
+            color: white;
+        }
+
+        .alert-message {
+            border-radius: 12px;
+            border: none;
+            font-weight: 500;
+        }
+
+        .alert-success {
+            background: linear-gradient(135deg, #d1e7dd 0%, #c3e6cb 100%);
+            color: #0f5132;
+            border-left: 4px solid #198754;
+        }
+
+        .alert-danger {
+            background: linear-gradient(135deg, #f8d7da 0%, #f5c2c7 100%);
+            color: #842029;
+            border-left: 4px solid #dc3545;
+        }
+
+        .alert-info {
+            background: linear-gradient(135deg, #cfe2ff 0%, #b6d4fe 100%);
+            color: #084298;
+            border-left: 4px solid #0d6efd;
+        }
+
+        /* Frutiger Metro Dynamic Background */
+        body {
+            background: linear-gradient(45deg, #E8F4F8, #F0E8F8, #F8F0E8, #E8F8F0, #F8F0F0, #E8F4F8);
+            background-size: 400% 400%;
+            animation: metro-flow 30s ease infinite;
+            position: relative;
+            min-height: 100vh;
+            overflow-x: hidden;
+            color: #333;
+        }
+        
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: 
+                linear-gradient(90deg, rgba(0, 120, 215, 0.12) 0%, transparent 30%, transparent 70%, rgba(0, 120, 215, 0.12) 100%),
+                linear-gradient(180deg, rgba(255, 140, 0, 0.08) 0%, transparent 40%, transparent 60%, rgba(255, 140, 0, 0.08) 100%),
+                linear-gradient(45deg, rgba(107, 142, 35, 0.1) 0%, transparent 50%, transparent 50%, rgba(107, 142, 35, 0.1) 100%);
+            animation: metro-grid 20s ease-in-out infinite;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        body::after {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: 
+                linear-gradient(90deg, transparent 0%, rgba(0, 120, 215, 0.05) 25%, rgba(0, 120, 215, 0.05) 75%, transparent 100%),
+                linear-gradient(0deg, transparent 0%, rgba(255, 140, 0, 0.04) 50%, transparent 100%);
+            background-size: 200% 100%, 100% 200%;
+            animation: metro-slide 25s ease-in-out infinite;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        @keyframes metro-flow {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        @keyframes metro-grid {
+            0%, 100% { transform: scale(1) translateY(0); filter: brightness(1); }
+            25% { transform: scale(1.02) translateY(-5px); filter: brightness(1.03); }
+            50% { transform: scale(1.01) translateY(-10px); filter: brightness(1.05); }
+            75% { transform: scale(1.02) translateY(-5px); filter: brightness(1.03); }
+        }
+
+        @keyframes metro-slide {
+            0%, 100% { background-position: 0% 0%, 0% 0%; }
+            50% { background-position: 100% 0%, 0% 100%; }
+        }
+
+        body > * {
+            position: relative;
+            z-index: 1;
+        }
+    </style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar navbar-expand-lg navbar-light">
+    <div class="container-fluid px-4">
+        <a class="navbar-brand" href="/">Clothes <span class="brand-red">Swap</span></a>
+
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="mainNavbar">
+            <ul class="navbar-nav ms-auto mb-2 mb-lg-0" style="display: flex; align-items: center; gap: 0.8rem;">
+                <li class="nav-item"><a class="nav-link" aria-current="page" href="/">Home</a></li>
+
+                <% if (user) { %>
+                    <li class="nav-item"><a class="nav-link" href="/inbox">Inbox</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/wardrobe">Wardrobe</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/swap">Swap</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/sahm">SwapMates</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/profile">Profile</a></li>
+                    <li class="nav-item ms-lg-2"><a class="btn btn-sm" style="background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%); color: white; border: none; border-radius: 10px; font-weight: 700; padding: 0.7rem 1.6rem; transition: all 0.3s ease; box-shadow: 0 4px 12px rgba(45, 90, 79, 0.2); font-size: 0.95rem; font-family: 'Cinzel', serif; letter-spacing: 0.08em; text-transform: uppercase; display: flex; align-items: center;" href="/logout" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 16px rgba(45, 90, 79, 0.3)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 12px rgba(45, 90, 79, 0.2)';">Logout</a></li>
+                <% } else { %>
+                    <li class="nav-item ms-lg-2"><a class="btn btn-sm" style="background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%); color: white; border: none; border-radius: 10px; font-weight: 700; padding: 0.7rem 1.6rem; transition: all 0.3s ease; box-shadow: 0 4px 12px rgba(45, 90, 79, 0.2); font-size: 0.95rem; font-family: 'Cinzel', serif; letter-spacing: 0.08em; text-transform: uppercase; display: flex; align-items: center;" href="/login" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 16px rgba(45, 90, 79, 0.3)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 12px rgba(45, 90, 79, 0.2)';">Sign In</a></li>
+                <% } %>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div class="container py-4">
+
+    <!-- Flash messages -->
+    <% if (typeof success_msg !== 'undefined' && success_msg && success_msg.length > 0) { %>
+        <div class="alert alert-success alert-message"><%= success_msg %></div>
+    <% } %>
+    <% if (typeof error_msg !== 'undefined' && error_msg && error_msg.length > 0) { %>
+        <div class="alert alert-danger alert-message"><%= error_msg %></div>
+    <% } %>
+    <% if (typeof message !== 'undefined' && message) { %>
+        <div class="alert alert-info alert-message"><%= message %></div>
+    <% } %>
+
+    <!-- PROFILE HEADER -->
+    <div class="profile-header">
+        <% if (user && user.profile_image_url) { %>
+            <img src="<%= user.profile_image_url %>" alt="Profile" class="profile-photo">
+        <% } else { %>
+            <div class="profile-initial">
+                <%= user && user.username ? user.username.charAt(0).toUpperCase() : '?' %>
+            </div>
+        <% } %>
+
+        <div class="profile-main">
+            <div class="d-flex justify-content-between align-items-start flex-wrap gap-2">
+                <div>
+                    <div class="profile-username"><%= user ? user.username : 'My Profile' %></div>
+                    <div class="profile-meta">
+                        <% if (user && user.email) { %>
+                            <div><strong>Email:</strong> <%= user.email %></div>
+                        <% } %>
+                        <% if (user && user.gender) { %>
+                            <div><strong>Gender:</strong> <%= user.gender %></div>
+                        <% } %>
+                    </div>
+                </div>
+                <div class="profile-actions text-end">
+                    <% if (user && user.user_id) { %>
+                        <a href="/users/<%= user.user_id %>" class="pill-link">
+                            View public profile
+                        </a>
+                    <% } %>
+                    <a href="/profile/edit" class="pill-link">
+                        Edit profile
+                    </a>
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- OPTIONAL STATS -->
+    <div class="row mb-3">
+        <div class="col-12 col-md-8">
+            <div class="section-title">Wardrobe</div>
+            <div class="section-subtitle">
+                Quickly jump to manage your personal items or swap-ready pieces.
+            </div>
+        </div>
+        <div class="col-12 col-md-4">
+            <div class="stats-card p-3">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <div class="stat-number">
+                            <%= (typeof wardrobeStats !== 'undefined' && wardrobeStats && wardrobeStats.total) ? wardrobeStats.total : 0 %>
+                        </div>
+                        <div class="stat-label">Total items</div>
+                    </div>
+                    <div>
+                        <div class="stat-number">
+                            <%= (typeof wardrobeStats !== 'undefined' && wardrobeStats && wardrobeStats.swap) ? wardrobeStats.swap : 0 %>
+                        </div>
+                        <div class="stat-label">Swap items</div>
+                    </div>
+                    <div>
+                        <div class="stat-number">
+                            <%= (typeof wardrobeStats !== 'undefined' && wardrobeStats && wardrobeStats.personal) ? wardrobeStats.personal : 0 %>
+                        </div>
+                        <div class="stat-label">Personal</div>
+                    </div>
+                </div>
+                <div class="mt-2 text-end">
+                    <a href="/wardrobe" class="btn btn-sm btn-outline-secondary" style="border-radius:999px;">
+                        Manage wardrobe
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- OOTD POSTS SECTION -->
+    <div class="mt-4">
+        <div class="section-title d-flex justify-content-between align-items-center">
+            <span>My OOTD Posts</span>
+            <a href="/create-ootd" class="btn btn-sm btn-primary pill-link-red" style="border-radius:999px;">
+                + Create OOTD
+            </a>
+        </div>
+        <div class="section-subtitle">
+            All your outfits – private and public. Edit or remove them anytime.
+        </div>
+
+        <%
+            // always have an array to work with
+            const myOotdPosts = (typeof ootdPosts !== 'undefined' && ootdPosts) ? ootdPosts : [];
+        %>
+
+        <% if (myOotdPosts.length > 0) { %>
+            <div class="row g-4">
+                <% myOotdPosts.forEach(post => { %>
+                    <div class="col-12 col-md-6 col-lg-4">
+                        <div class="ootd-card">
+
+                            <!-- IMAGE AREA: same style as clothing items, with optional carousel -->
+                            <div class="ootd-image-wrapper">
+                                <% 
+                                    const imgList = [];
+                                    if (post.image_url_1) imgList.push(post.image_url_1);
+                                    if (post.image_url_2) imgList.push(post.image_url_2);
+                                    if (post.image_url_3) imgList.push(post.image_url_3);
+                                %>
+
+                                <% if (imgList.length === 0) { %>
+                                    <div class="ootd-image d-flex align-items-center justify-content-center text-muted">
+                                        No image
+                                    </div>
+                                <% } else if (imgList.length === 1) { %>
+                                    <img src="<%= imgList[0] %>" alt="OOTD" class="ootd-image">
+                                <% } else { %>
+                                    <div id="ootdCarousel-<%= post.post_id %>" class="carousel slide w-100" data-bs-ride="carousel">
+                                        <div class="carousel-inner">
+                                            <% imgList.forEach((src, idx) => { %>
+                                                <div class="carousel-item <%= idx === 0 ? 'active' : '' %>">
+                                                    <img src="<%= src %>" class="ootd-image d-block mx-auto" alt="OOTD image <%= idx + 1 %>">
+                                                </div>
+                                            <% }) %>
+                                        </div>
+                                        <button class="carousel-control-prev" type="button" data-bs-target="#ootdCarousel-<%= post.post_id %>" data-bs-slide="prev">
+                                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                            <span class="visually-hidden">Previous</span>
+                                        </button>
+                                        <button class="carousel-control-next" type="button" data-bs-target="#ootdCarousel-<%= post.post_id %>" data-bs-slide="next">
+                                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                            <span class="visually-hidden">Next</span>
+                                        </button>
+                                    </div>
+                                <% } %>
+                            </div>
+
+                            <div class="p-3">
+                                <% if (post.caption) { %>
+                                    <div class="ootd-caption mb-2"><%= post.caption %></div>
+                                <% } else { %>
+                                    <div class="ootd-caption text-muted mb-2 fst-italic">No caption</div>
+                                <% } %>
+
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <span class="pill-tag <%= post.visibility === 'private' ? 'pill-tag-private' : 'pill-tag-public' %>">
+                                        <%= post.visibility === 'private' ? 'Private' : 'Public' %>
+                                    </span>
+                                    <span style="font-size:0.75rem;color:#6b7280;">
+                                        #<%= post.post_id %>
+                                    </span>
+                                </div>
+
+                                <div style="font-size:0.75rem;color:#6b7280;">
+                                    <% if (post.created_at) { %>
+                                        Posted: <%= post.created_at.toLocaleString ? post.created_at.toLocaleString() : post.created_at %>
+                                    <% } %>
+                                </div>
+                            </div>
+
+                            <div class="ootd-stats">
+                                <div class="ootd-stat-item">
+                                    <span>♥</span>
+                                    <span><strong><%= post.like_count || 0 %></strong> likes</span>
+                                </div>
+                                <div class="ootd-stat-item">
+                                    <span>💬</span>
+                                    <span><strong><%= post.comment_count || 0 %></strong> comments</span>
+                                </div>
+                            </div>
+
+                            <div class="ootd-footer">
+                                <div class="text-muted">
+                                    Manage
+                                </div>
+                                <div>
+                                    <a href="/ootd/<%= post.post_id %>/edit"
+                                       class="btn btn-sm btn-outline-secondary btn-sm-rounded me-1">
+                                        Edit
+                                    </a>
+                                    <form action="/ootd/<%= post.post_id %>/delete"
+                                          method="POST"
+                                          style="display:inline;"
+                                          onsubmit="return confirm('Delete this OOTD post?');">
+                                        <button type="submit" class="btn btn-sm btn-outline-danger btn-sm-rounded">
+                                            Delete
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                <% }) %>
+            </div>
+        <% } else { %>
+            <div class="empty-state">
+                <h5>No OOTD posts yet</h5>
+                <p>Share your first outfit of the day and build your style history here.</p>
+                <a href="/create-ootd" class="btn btn-primary pill-link-red" style="border-radius:999px;">
+                    + Create your first OOTD
+                </a>
+            </div>
+        <% } %>
+    </div>
+
+</div>
+
+<!-- AI CHATBOT WIDGET -->
+<%- include('ai-chatbot-widget') %>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Choose Counter Item</title>
+
+  <!-- Bootstrap 5 -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Global Design System -->
+  <link href="/css/global-design.css" rel="stylesheet">
+
+  <style>
+    :root{ --danger: var(--primary); }
+
+    .brand-red { color: var(--primary); font-weight: 800; letter-spacing: .4px; }
+    .nav-link-active { font-weight: 700; color: var(--danger) !important; }
+
+    .wrap { max-width: 1100px; margin: 0 auto; padding: 22px 12px 40px; }
+    .hint { color: rgba(0,0,0,.55); font-size: .92rem; }
+
+    .panel {
+      background: #fff;
+      border: 1px solid rgba(0,0,0,.08);
+      border-radius: 18px;
+      box-shadow: 0 10px 24px rgba(0,0,0,.06);
+      overflow: hidden;
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: 160px 1fr;
+      gap: 14px;
+      padding: 16px;
+    }
+
+    .hero-img {
+      width: 160px;
+      height: 140px;
+      object-fit: cover;
+      background: #e9ecef;
+      border-radius: 16px;
+      border: 1px solid rgba(0,0,0,.08);
+    }
+
+    .avatar {
+      width: 42px;
+      height: 42px;
+      border-radius: 999px;
+      object-fit: cover;
+      background: #e9ecef;
+      border: 1px solid rgba(0,0,0,.08);
+    }
+
+    .tiny { font-size: .85rem; color: rgba(0,0,0,.6); }
+    .btn-round { border-radius: 999px; }
+
+    .item-card {
+      background: #fff;
+      border: 1px solid rgba(0,0,0,.08);
+      border-radius: 18px;
+      box-shadow: 0 10px 24px rgba(0,0,0,.06);
+      overflow: hidden;
+      transition: transform 140ms ease;
+      height: 100%;
+    }
+    .item-card:hover { transform: translateY(-2px); }
+
+    .item-img {
+      width: 100%;
+      height: 160px;
+      object-fit: cover;
+      background: #e9ecef;
+    }
+
+    .pill {
+      font-size: .82rem;
+      border: 1px solid rgba(0,0,0,.12);
+      padding: .22rem .58rem;
+      border-radius: 999px;
+      background: #fff;
+      color: rgba(0,0,0,.75);
+    }
+
+    .empty {
+      background: #fff;
+      border: 1px solid rgba(0,0,0,.08);
+      border-radius: 18px;
+      padding: 18px;
+      box-shadow: 0 10px 24px rgba(0,0,0,.06);
+      text-align: center;
+      margin-top: 18px;
+    }
+
+    @media (max-width: 576px) {
+      .hero { grid-template-columns: 1fr; }
+      .hero-img { width: 100%; height: 190px; }
+    }
+
+    /* Frutiger Metro Dynamic Background */
+    body {
+        background: linear-gradient(45deg, #E8F4F8, #F0E8F8, #F8F0E8, #E8F8F0, #F8F0F0, #E8F4F8);
+        background-size: 400% 400%;
+        animation: metro-flow 30s ease infinite;
+        position: relative;
+        min-height: 100vh;
+        overflow-x: hidden;
+        color: #333;
+    }
+    
+    body::before {
+        content: '';
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-image: 
+            linear-gradient(90deg, rgba(0, 120, 215, 0.12) 0%, transparent 30%, transparent 70%, rgba(0, 120, 215, 0.12) 100%),
+            linear-gradient(180deg, rgba(255, 140, 0, 0.08) 0%, transparent 40%, transparent 60%, rgba(255, 140, 0, 0.08) 100%),
+            linear-gradient(45deg, rgba(107, 142, 35, 0.1) 0%, transparent 50%, transparent 50%, rgba(107, 142, 35, 0.1) 100%);
+        animation: metro-grid 20s ease-in-out infinite;
+        pointer-events: none;
+        z-index: 0;
+    }
+
+    body::after {
+        content: '';
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-image: 
+            linear-gradient(90deg, transparent 0%, rgba(0, 120, 215, 0.05) 25%, rgba(0, 120, 215, 0.05) 75%, transparent 100%),
+            linear-gradient(0deg, transparent 0%, rgba(255, 140, 0, 0.04) 50%, transparent 100%);
+        background-size: 200% 100%, 100% 200%;
+        animation: metro-slide 25s ease-in-out infinite;
+        pointer-events: none;
+        z-index: 0;
+    }
+
+    @keyframes metro-flow {
+        0% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+        100% { background-position: 0% 50%; }
+    }
+
+    @keyframes metro-grid {
+        0%, 100% { transform: scale(1) translateY(0); filter: brightness(1); }
+        25% { transform: scale(1.02) translateY(-5px); filter: brightness(1.03); }
+        50% { transform: scale(1.01) translateY(-10px); filter: brightness(1.05); }
+        75% { transform: scale(1.02) translateY(-5px); filter: brightness(1.03); }
+    }
+
+    @keyframes metro-slide {
+        0%, 100% { background-position: 0% 0%, 0% 0%; }
+        50% { background-position: 100% 0%, 0% 100%; }
+    }
+
+    body > * {
+        position: relative;
+        z-index: 1;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- YOUR NAVBAR -->
+  <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
+    <div class="container">
+      <a class="navbar-brand" href="/">
+        <span class="brand-red">CLOTHES</span> SWAP
+      </a>
+
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div class="collapse navbar-collapse" id="mainNavbar">
+        <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+
+          <li class="nav-item">
+            <a class="nav-link" href="/">Home</a>
+          </li>
+
+          <% if (user) { %>
+            <li class="nav-item">
+              <a class="nav-link" href="/wardrobe">Wardrobe</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link nav-link-active" href="/swap">Swap</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/sahm">SwapMates</a>
+            </li>
+          <% } %>
+
+          <% if (user) { %>
+            <li class="nav-item">
+              <a class="nav-link" href="/profile">Profile</a>
+            </li>
+            <li class="nav-item ms-lg-3">
+              <a class="btn btn-sm" style="background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%); color: white; border: none; border-radius: 10px; font-weight: 700; padding: 0.7rem 1.6rem; transition: all 0.3s ease; box-shadow: 0 4px 12px rgba(45, 90, 79, 0.2); font-size: 0.95rem; font-family: 'Cinzel', serif; letter-spacing: 0.08em; text-transform: uppercase; display: flex; align-items: center;" href="/logout" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 16px rgba(45, 90, 79, 0.3)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 12px rgba(45, 90, 79, 0.2)';">Logout</a>
+            </li>
+          <% } else { %>
+            <li class="nav-item ms-lg-3">
+              <a class="btn btn-sm" style="background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%); color: white; border: none; border-radius: 10px; font-weight: 700; padding: 0.7rem 1.6rem; transition: all 0.3s ease; box-shadow: 0 4px 12px rgba(45, 90, 79, 0.2); font-size: 0.95rem; font-family: 'Cinzel', serif; letter-spacing: 0.08em; text-transform: uppercase; display: flex; align-items: center;" href="/login" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 16px rgba(45, 90, 79, 0.3)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 12px rgba(45, 90, 79, 0.2)';">Sign In</a>
+            </li>
+          <% } %>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <div class="wrap">
+
+    <div class="d-flex align-items-start justify-content-between gap-3">
+      <div>
+        <h3 class="fw-bold mb-1">Review Like</h3>
+        <div class="hint">
+          Pick <b>one</b> item from the liker. Only then we create a <b>match + chat</b>.
+        </div>
+      </div>
+
+      <div class="text-end">
+        <a href="/swap/incoming" class="btn btn-sm btn-success btn-round">Back</a>
+        <a href="/swap/matches" class="btn btn-sm btn-success btn-round ms-1">Matches</a>
+      </div>
+    </div>
+
+    <!-- Flash messages -->
+    <% if (success_msg && success_msg.length > 0) { %>
+    <div class="alert alert-success mt-3"><%= success_msg[0] %></div>
+    <% } %>
+
+    <% if (error_msg && error_msg.length > 0) { %>
+    <div class="alert alert-success mt-3"><%= error_msg[0] %></div>
+    <% } %>
+
+
+    <!-- Top panel: who liked + which item -->
+    <div class="panel mt-4">
+      <div class="hero">
+        <img
+          class="hero-img"
+          src="<%= swipe?.liked_item_image || '/images/placeholder.png' %>"
+          alt="Liked item"
+          onerror="this.src='/images/placeholder.png';"
+        />
+
+        <div>
+          <div class="d-flex align-items-center gap-2 mb-2">
+            <img
+              class="avatar"
+              src="<%= swipe?.liker_profile_image || '/images/placeholder.png' %>"
+              alt="User"
+              onerror="this.src='/images/placeholder.png';"
+            />
+            <div>
+              <div class="fw-semibold">
+                <%= swipe?.liker_username || ('User #' + (swipe?.liker_user_id || '')) %>
+              </div>
+              <div class="tiny">
+                liked your item: <b><%= swipe?.liked_item_title || ('Item #' + (swipe?.liked_item_id || '')) %></b>
+              </div>
+            </div>
+          </div>
+
+          <div class="tiny">
+            Choose 1 item below to send an offer. If you reject, nothing will be created.
+          </div>
+
+          <div class="d-flex gap-2 mt-3">
+            <form
+              action="/swap/incoming/<%= swipe.swipe_id %>/reject"
+              method="POST"
+              onsubmit="return confirm('Reject this like? No match will be created.');"
+            >
+              <button type="submit" class="btn btn-outline-success btn-round">Reject</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Items grid -->
+    <div class="mt-4">
+      <h5 class="fw-bold mb-2">Pick 1 item from <%= swipe?.liker_username || 'this user' %></h5>
+      <div class="tiny mb-3">Only items that are available for swap are shown.</div>
+
+      <% if (!likerItems || likerItems.length === 0) { %>
+        <div class="empty">
+          <h6 class="fw-bold mb-2">No available swap items</h6>
+          <div class="tiny mb-3">
+            This user has no items available for swap right now. You can reject the like.
+          </div>
+          <form
+            action="/swap/incoming/<%= swipe.swipe_id %>/reject"
+            method="POST"
+            onsubmit="return confirm('Reject this like? No match will be created.');"
+          >
+            <button type="submit" class="btn btn-success btn-round">Reject</button>
+          </form>
+        </div>
+      <% } else { %>
+
+        <div class="row g-4">
+          <% likerItems.forEach(item => { %>
+            <div class="col-12 col-md-6 col-lg-4">
+              <div class="item-card h-100">
+                <img
+                  class="item-img"
+                  src="<%= item.image_url_1 || '/images/placeholder.png' %>"
+                  alt="<%= item.title %>"
+                  onerror="this.src='/images/placeholder.png';"
+                />
+
+                <div class="p-3">
+                  <div class="fw-bold mb-1"><%= item.title %></div>
+
+                  <div class="d-flex flex-wrap gap-2 mt-2">
+                    <% if (item.category) { %><span class="pill"><%= item.category %></span><% } %>
+                    <% if (item.size_label) { %><span class="pill">Size: <%= item.size_label %></span><% } %>
+                    <% if (item.color) { %><span class="pill"><%= item.color %></span><% } %>
+                    <% if (item.condition_grade) { %><span class="pill">Cond: <%= item.condition_grade %></span><% } %>
+                  </div>
+
+                  <form
+                    action="/swap/incoming/<%= swipe.swipe_id %>/accept"
+                    method="POST"
+                    class="mt-3"
+                    onsubmit="return confirm('Create match + chat with this item?');"
+                  >
+                    <input type="hidden" name="selected_item_id" value="<%= item.item_id %>" />
+                    <button type="submit" class="btn btn-success btn-round w-100">
+                      Select this item
+                    </button>
+                  </form>
+
+                  <div class="tiny mt-2">
+                    This will create a <b>match + chat</b> instantly.
+                  </div>
+                </div>
+              </div>
+            </div>
+          <% }) %>
+        </div>
+
+      <% } %>
+    </div>
+
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

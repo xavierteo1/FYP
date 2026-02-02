@@ -1,0 +1,971 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Clothes Swap | Home</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- Bootstrap 5 -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <style>
+    :root {
+      --primary: #2D5A4F;
+      --primary-dark: #1F3D34;
+      --secondary: #1A1A1A;
+      --accent: #4A7C6B;
+      --neutral-light: #F5EEE6;
+      --border-light: #E8DED1;
+    }
+
+    body {
+      background: linear-gradient(45deg, #E8F4F8, #F0E8F8, #F8F0E8, #E8F8F0, #F8F0F0, #E8F4F8);
+      background-size: 400% 400%;
+      animation: metro-flow 30s ease infinite;
+      position: relative;
+      min-height: 100vh;
+      overflow-x: hidden;
+      color: #333;
+    }
+    
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-image: 
+        linear-gradient(90deg, rgba(0, 120, 215, 0.12) 0%, transparent 30%, transparent 70%, rgba(0, 120, 215, 0.12) 100%),
+        linear-gradient(180deg, rgba(255, 140, 0, 0.08) 0%, transparent 40%, transparent 60%, rgba(255, 140, 0, 0.08) 100%),
+        linear-gradient(45deg, rgba(107, 142, 35, 0.1) 0%, transparent 50%, transparent 50%, rgba(107, 142, 35, 0.1) 100%);
+      animation: metro-grid 20s ease-in-out infinite;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    body::after {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-image: 
+        linear-gradient(90deg, transparent 0%, rgba(0, 120, 215, 0.05) 25%, rgba(0, 120, 215, 0.05) 75%, transparent 100%),
+        linear-gradient(0deg, transparent 0%, rgba(255, 140, 0, 0.04) 50%, transparent 100%);
+      background-size: 200% 100%, 100% 200%;
+      animation: metro-slide 25s ease-in-out infinite;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    @keyframes metro-flow {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    @keyframes metro-grid {
+      0%, 100% { transform: scale(1) translateY(0); filter: brightness(1); }
+      25% { transform: scale(1.02) translateY(-5px); filter: brightness(1.03); }
+      50% { transform: scale(1.01) translateY(-10px); filter: brightness(1.05); }
+      75% { transform: scale(1.02) translateY(-5px); filter: brightness(1.03); }
+    }
+
+    @keyframes metro-slide {
+      0%, 100% { background-position: 0% 0%, 0% 0%; }
+      50% { background-position: 100% 0%, 0% 100%; }
+    }
+    
+    body > * {
+      position: relative;
+      z-index: 1;
+    }
+
+    @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;800;900&family=Archivo+Black&display=swap');
+
+    .navbar {
+      position: sticky;
+      top: 0;
+      z-index: 1200;
+      background: rgba(221, 208, 196, 0.95) !important;
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(45, 90, 79, 0.1) !important;
+      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.08);
+      padding: 2rem 0 !important;
+      transition: all 0.3s ease;
+    }
+
+    .navbar.minimized {
+      padding: 0.8rem 0 !important;
+    }
+
+    .navbar-brand {
+      font-weight: 900;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      font-size: 1.9rem;
+      background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      font-family: 'Archivo Black', sans-serif;
+      transition: font-size 0.3s ease;
+    }
+
+    .navbar.minimized .navbar-brand {
+      font-size: 1.4rem;
+    }
+
+    .brand-red { color: var(--primary); }
+
+    .nav-link {
+      color: var(--secondary) !important;
+      font-weight: 700;
+      transition: all 0.3s ease;
+      position: relative;
+      font-family: 'Cinzel', serif;
+      font-size: 1.05rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin: 0 0.5rem;
+      display: flex;
+      align-items: center;
+    }
+
+    .nav-link::after {
+      content: '';
+      position: absolute;
+      bottom: -8px;
+      left: 0;
+      width: 0;
+      height: 2.5px;
+      background: var(--primary);
+      transition: width 0.3s ease;
+    }
+
+    .nav-link:hover::after {
+      width: 100%;
+    }
+
+    .feed-container { padding-top: 1rem; padding-bottom: 5rem; display: flex; flex-direction: column; gap: 2.5rem; }
+
+    /* Instagram-like card */
+    .ig-card {
+      border: 0;
+      border-radius: 20px;
+      background: white;
+      overflow: hidden;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+      transition: all 0.3s ease;
+    }
+
+    .ig-card:hover {
+      box-shadow: 0 12px 48px rgba(16, 185, 129, 0.15);
+      transform: translateY(-4px);
+    }
+
+    .ig-header {
+      padding: 1.2rem 1.5rem;
+      border-bottom: 1px solid #F3F4F6;
+      background: linear-gradient(135deg, rgba(16, 185, 129, 0.02) 0%, rgba(6, 214, 160, 0.02) 100%);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .profile-circle {
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      object-fit: cover;
+      border: 3px solid var(--accent);
+      margin-right: 0.8rem;
+    }
+    .username-text { 
+      font-weight: 800; 
+      font-size: 0.95rem;
+      color: var(--secondary);
+    }
+
+    .post-time {
+      font-size: 0.8rem;
+      color: #6B7280;
+    }
+
+    /* Left image panel */
+    .ig-image-panel {
+      background: linear-gradient(135deg, #F0F9F7 0%, #ECFDF5 100%);
+      min-height: 450px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+    .ig-image-panel img {
+      width: 100%;
+      height: auto;
+      max-height: 600px;
+      object-fit: contain;
+    }
+
+    /* Right panel */
+    .ig-side {
+      border-left: 1px solid #F3F4F6;
+      height: 450px;
+      display: flex;
+      flex-direction: column;
+      background: white;
+    }
+    .ig-side-top {
+      padding: 1.5rem;
+      border-bottom: 1px solid #F3F4F6;
+      flex-shrink: 0;
+    }
+    .ig-caption {
+      font-size: 0.92rem;
+      color: var(--secondary);
+      line-height: 1.6;
+      max-height: 120px;
+      overflow: hidden;
+      display: -webkit-box;
+      -webkit-line-clamp: 4;
+      line-clamp: 4;
+      -webkit-box-orient: vertical;
+      cursor: pointer;
+      transition: color 0.2s ease;
+    }
+
+    .ig-caption:hover {
+      color: var(--accent);
+    }
+
+    .ig-comments {
+      padding: 1rem 1.5rem;
+      overflow-y: auto;
+      flex: 1;
+      background: white;
+      min-height: 120px;
+    }
+    .ig-comment {
+      font-size: 0.9rem;
+      margin-bottom: 0.8rem;
+      line-height: 1.5;
+      color: var(--secondary);
+      word-wrap: break-word;
+    }
+    .ig-comment strong {
+      font-weight: 700;
+      color: var(--secondary);
+    }
+
+    .ig-actions {
+      padding: 1rem 1.5rem;
+      border-top: 1px solid #F3F4F6;
+      background: white;
+      display: flex;
+      gap: 1rem;
+      align-items: center;
+    }
+
+    .ig-like-btn {
+      border-radius: 12px;
+      font-weight: 700;
+      border: 2px solid var(--primary);
+      background: white;
+      color: var(--primary);
+      transition: all 0.3s ease;
+      padding: 0.5rem 1rem;
+    }
+
+    .ig-like-btn:hover {
+      background: var(--primary);
+      color: white;
+      transform: scale(1.05);
+    }
+
+    .ig-like-btn.liked {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+      color: white;
+      border-color: var(--primary);
+    }
+
+    .ig-add-comment {
+      padding: 1.5rem;
+      border-top: 1px solid #F3F4F6;
+      background: white;
+      display: flex;
+      gap: 0.8rem;
+    }
+    .ig-add-comment input { 
+      border-radius: 12px;
+      border: 2px solid var(--border-light);
+      padding: 0.75rem 1rem;
+      transition: all 0.3s ease;
+    }
+    .ig-add-comment input:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+      outline: none;
+    }
+    .ig-add-comment button {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+      color: white;
+      border: none;
+      border-radius: 12px;
+      font-weight: 700;
+      padding: 0.75rem 1.5rem;
+      transition: all 0.3s ease;
+    }
+    .ig-add-comment button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+    }
+
+    .hint-text { font-size: 0.85rem; color: #6B7280; }
+
+    .link-accent {
+      color: var(--primary);
+      font-weight: 700;
+      text-decoration: none;
+      transition: all 0.3s ease;
+      position: relative;
+    }
+    .link-accent::after {
+      content: '';
+      position: absolute;
+      bottom: -4px;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background: var(--primary);
+      transition: width 0.3s ease;
+    }
+    .link-accent:hover::after {
+      width: 100%;
+    }
+
+    .search-card {
+      border-radius: 20px;
+      border: 0;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+      background: white;
+      overflow: hidden;
+      transition: all 0.3s ease;
+    }
+    .search-card:hover {
+      box-shadow: 0 12px 48px rgba(16, 185, 129, 0.15);
+    }
+    .search-card .card-body { 
+      padding: 2rem;
+    }
+
+    .search-badge {
+      font-size: 0.7rem;
+      background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+      color: white;
+      border-radius: 20px;
+      padding: 0.35rem 0.75rem;
+      font-weight: 800;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    .search-input {
+      border: 2px solid var(--border-light);
+      border-radius: 12px;
+      padding: 0.75rem 1.2rem;
+      font-size: 1rem;
+      transition: all 0.3s ease;
+    }
+
+    .search-input:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+      outline: none;
+    }
+
+    .search-btn {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+      color: white;
+      border: none;
+      border-radius: 12px;
+      font-weight: 700;
+      padding: 0.75rem 1.5rem;
+      transition: all 0.3s ease;
+    }
+
+    .search-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(16, 185, 129, 0.3);
+    }
+
+    .pill-tag {
+      font-size: 0.75rem;
+      border-radius: 999px;
+      padding: 0.2rem 0.65rem;
+      background-color: rgba(16, 185, 129, 0.1);
+      color: var(--primary);
+      font-weight: 600;
+    }
+
+    /* user results styling */
+    .user-result-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid var(--accent);
+    }
+    .user-result-initial {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      font-size: 0.8rem;
+      color: white;
+      background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+    }
+
+    /* Floating create OOTD button */
+    .floating-create-btn {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+      color: white;
+      width: 70px;
+      height: 70px;
+      border-radius: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+      text-decoration: none;
+      box-shadow: 0 12px 40px rgba(16, 185, 129, 0.4);
+      z-index: 1000;
+      transition: all 0.3s ease;
+      border: none;
+      cursor: pointer;
+    }
+    .floating-create-btn:hover {
+      transform: translateX(-50%) scale(1.1);
+      box-shadow: 0 16px 50px rgba(16, 185, 129, 0.5);
+      color: white;
+      text-decoration: none;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 4rem 1rem;
+      color: #6B7280;
+    }
+    .empty-state h5 { 
+      font-weight: 800;
+      color: var(--secondary);
+      font-size: 1.5rem;
+      margin-bottom: 1rem;
+    }
+    .empty-state p { font-size: 1rem; margin-bottom: 1.5rem; }
+
+    /* Carousel fit */
+    .carousel { width: 100%; height: 100%; }
+    .carousel-inner { width: 100%; height: 100%; }
+    .carousel-item { width: 100%; height: 100%; }
+    .carousel .carousel-item img { height: auto; max-height: 600px; object-fit: contain; width: 100%; }
+
+    @media (max-width: 991px) {
+      .ig-side { height: auto; }
+      .ig-image-panel img { height: auto; max-height: 380px; }
+      .carousel .carousel-item img { height: auto; max-height: 380px; }
+      .ig-comments { max-height: 240px; }
+    }
+
+    /* Floating SwapMates apply widget (bottom-left, dismissible) */
+    .swapmates-apply-widget {
+      position: fixed;
+      left: 18px;
+      bottom: 18px;
+      z-index: 1100;
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+      border: 2px solid var(--accent);
+      max-width: 280px;
+      overflow: hidden;
+      transition: all 0.3s ease;
+    }
+
+    .swapmates-apply-widget:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 16px 50px rgba(16, 185, 129, 0.2);
+    }
+
+    .swapmates-apply-link {
+      display: flex;
+      gap: 12px;
+      padding: 14px 16px;
+      text-decoration: none;
+      color: var(--secondary);
+      transition: all 0.3s ease;
+    }
+
+    .swapmates-apply-link:hover {
+      background: rgba(16, 185, 129, 0.05);
+    }
+
+    .swapmates-apply-badge {
+      width: 50px;
+      height: 50px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 0.75rem;
+      letter-spacing: 0.05em;
+      flex: 0 0 auto;
+    }
+
+    .swapmates-apply-title {
+      font-weight: 800;
+      font-size: 0.95rem;
+      line-height: 1.1;
+      margin-bottom: 4px;
+      color: var(--secondary);
+    }
+
+    .swapmates-apply-sub {
+      font-size: 0.8rem;
+      color: #6B7280;
+      line-height: 1.15;
+    }
+
+    .swapmates-apply-close {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      border: none;
+      background: rgba(16, 185, 129, 0.1);
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .swapmates-apply-close:hover {
+      background: rgba(16, 185, 129, 0.2);
+      transform: rotate(90deg);
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- NAVBAR -->
+  <nav class="navbar navbar-expand-lg navbar-light">
+    <div class="container-fluid px-4">
+      <a class="navbar-brand" href="/">Clothes <span class="brand-red">Swap</span></a>
+
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div class="collapse navbar-collapse" id="mainNavbar">
+        <ul class="navbar-nav ms-auto mb-2 mb-lg-0" style="display: flex; align-items: center; gap: 0.8rem;">
+          <li class="nav-item"><a class="nav-link" aria-current="page" href="/">Home</a></li>
+
+          <% if (user) { %>
+            <li class="nav-item"><a class="nav-link" href="/inbox">Inbox</a></li>
+            <li class="nav-item"><a class="nav-link" href="/wardrobe">Wardrobe</a></li>
+            <li class="nav-item"><a class="nav-link" href="/swap">Swap</a></li>
+            <li class="nav-item"><a class="nav-link" href="/sahm">SwapMates</a></li>
+            <li class="nav-item"><a class="nav-link" href="/profile">Profile</a></li>
+            <li class="nav-item ms-lg-2"><a class="btn btn-sm" style="background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%); color: white; border: none; border-radius: 10px; font-weight: 700; padding: 0.7rem 1.6rem; transition: all 0.3s ease; box-shadow: 0 4px 12px rgba(45, 90, 79, 0.2); font-size: 0.95rem; font-family: 'Cinzel', serif; letter-spacing: 0.08em; text-transform: uppercase; display: flex; align-items: center;" href="/logout" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 16px rgba(45, 90, 79, 0.3)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 12px rgba(45, 90, 79, 0.2)';">Logout</a></li>
+          <% } else { %>
+            <li class="nav-item ms-lg-2"><a class="btn btn-sm" style="background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%); color: white; border: none; border-radius: 10px; font-weight: 700; padding: 0.7rem 1.6rem; transition: all 0.3s ease; box-shadow: 0 4px 12px rgba(45, 90, 79, 0.2); font-size: 0.95rem; font-family: 'Cinzel', serif; letter-spacing: 0.08em; text-transform: uppercase; display: flex; align-items: center;" href="/login" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 16px rgba(45, 90, 79, 0.3)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 12px rgba(45, 90, 79, 0.2)';">Sign In</a></li>
+          <% } %>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Guest banner -->
+  <% if (!user) { %>
+    <div class="alert alert-light text-center mt-3 mx-3 shadow-sm" style="border-radius: 12px;">
+      <strong>Welcome, guest!</strong> You can browse OOTD posts, but to swap items or create posts, please
+      <a href="/login" class="link-accent">sign in</a>.
+    </div>
+  <% } %>
+
+  <div class="container feed-container">
+
+    <!-- Messages -->
+    <div class="mt-3">
+      <% if (typeof success_msg !== 'undefined' && success_msg && success_msg.length > 0) { %>
+        <div class="alert alert-success"><%= success_msg %></div>
+      <% } %>
+      <% if (typeof error_msg !== 'undefined' && error_msg && error_msg.length > 0) { %>
+        <div class="alert alert-danger"><%= error_msg %></div>
+      <% } %>
+      <% if (message) { %>
+        <div class="alert alert-info"><%= message %></div>
+      <% } %>
+    </div>
+
+    <!-- ONE SEARCH BAR (Users + OOTD) -->
+    <div class="card search-card mt-3">
+      <div class="card-body">
+        <div class="d-flex align-items-center justify-content-between mb-2">
+          <div class="d-flex align-items-center gap-2">
+            <span class="search-badge">Search</span>
+            <span class="hint-text">users (username/email) OR OOTD (hashtags/caption)</span>
+          </div>
+          <% if (typeof q !== 'undefined' && q && q.trim().length > 0) { %>
+            <a class="btn btn-sm" style="background: #F3F4F6; color: var(--secondary); border-radius: 10px; font-weight: 600; transition: all 0.2s;" href="/" onmouseover="this.style.background='#E5E7EB'; this.style.transform='translateY(-1px)';" onmouseout="this.style.background='#F3F4F6'; this.style.transform='translateY(0)';">Clear</a>
+          <% } %>
+        </div>
+
+        <form action="/search" method="GET" class="d-flex gap-2">
+          <input
+            type="text"
+            name="q"
+            value="<%= (typeof q !== 'undefined' && q) ? q : '' %>"
+            class="form-control search-input"
+            placeholder="Try: anna | user@email.com | #jeans #fyp | denim outfit"
+          />
+          <button class="btn search-btn">Search</button>
+        </form>
+
+        <div class="hint-text mt-2">
+          Tip: Use hashtags like <strong>#jeans</strong> or keywords like <strong>denim</strong>.
+        </div>
+      </div>
+    </div>
+
+    <%
+      const hasQuery = (typeof q !== 'undefined' && q && q.trim().length > 0);
+      const hasUserResults = (typeof userResults !== 'undefined' && userResults && userResults.length > 0);
+      const hasOotdResults = (typeof ootdResults !== 'undefined' && ootdResults && ootdResults.length > 0);
+      const noResults = (hasQuery && !hasUserResults && !hasOotdResults);
+
+      function isLiked(post){
+        return post && Number(post.liked_by_me) > 0;
+      }
+
+      function buildImgList(post){
+        const imgList = [];
+        if (post.image_url_1) imgList.push(post.image_url_1);
+        if (post.image_url_2) imgList.push(post.image_url_2);
+        if (post.image_url_3) imgList.push(post.image_url_3);
+        return imgList;
+      }
+    %>
+
+    <!-- SEARCH RESULTS SUMMARY -->
+    <% if (hasQuery) { %>
+      <div class="d-flex align-items-center justify-content-between mt-4">
+        <h5 class="mb-0">Search Results</h5>
+        <div class="pill-tag">Query: <strong><%= q %></strong></div>
+      </div>
+      <div class="hint-text mt-2">
+        Showing users and OOTD posts matching your search.
+      </div>
+    <% } %>
+
+    <!-- USER RESULTS -->
+    <% if (hasUserResults) { %>
+      <div class="mt-3">
+        <h5 class="mb-3">Users</h5>
+        <div class="list-group">
+          <% userResults.forEach(u => { %>
+            <a href="/users/<%= u.user_id %>" class="list-group-item list-group-item-action d-flex align-items-center">
+              <% if (u.profile_image_url) { %>
+                <img src="<%= u.profile_image_url %>" alt="Profile" class="user-result-avatar me-3">
+              <% } else { %>
+                <div class="user-result-initial me-3 d-flex align-items-center justify-content-center bg-light">
+                  <%= u.username ? u.username.charAt(0).toUpperCase() : '?' %>
+                </div>
+              <% } %>
+              <div>
+                <strong><%= u.username || 'Unknown User' %></strong><br>
+                <small class="text-muted"><%= u.email %></small>
+              </div>
+            </a>
+          <% }) %>
+        </div>
+      </div>
+    <% } %>
+
+    <!-- OOTD POSTS RENDER HELPER -->
+    <%
+      function renderPost(post, keyPrefix){
+        const imgList = buildImgList(post);
+        const carouselId = `${keyPrefix}_${post.post_id}`;
+    %>
+
+      <div class="ig-card mb-4">
+        <!-- header -->
+        <div class="ig-header d-flex align-items-center justify-content-between">
+          <a href="/users/<%= post.user_id %>" class="d-flex align-items-center text-decoration-none text-dark">
+            <% if (post.profile_image_url) { %>
+              <img src="<%= post.profile_image_url %>" class="profile-circle me-2" alt="Profile">
+            <% } else { %>
+              <div class="profile-circle me-2 d-flex align-items-center justify-content-center bg-light text-muted">
+                <%= post.username ? post.username.charAt(0).toUpperCase() : '?' %>
+              </div>
+            <% } %>
+            <div class="username-text"><%= post.username || 'Unknown' %></div>
+          </a>
+          <% if (user && user.user_id === post.user_id) { %>
+            <div class="d-flex gap-2">
+              <a href="/ootd/<%= post.post_id %>/edit" class="btn btn-sm btn-outline-secondary" title="Edit post">✏️</a>
+              <form action="/ootd/<%= post.post_id %>/delete" method="POST" style="display:inline;" onsubmit="return confirm('Delete this OOTD post?');">
+                <button type="submit" class="btn btn-sm btn-outline-danger" title="Delete post">🗑️</button>
+              </form>
+            </div>
+          <% } %>
+        </div>
+
+        <!-- body -->
+        <div class="row g-0">
+          <!-- LEFT: image - CLICKABLE -->
+          <div class="col-lg-7">
+            <a href="/ootd/<%= post.post_id %>" style="text-decoration: none; color: inherit; display: block;">
+              <div class="ig-image-panel" style="cursor: pointer;">
+                <% if (imgList.length === 0) { %>
+                  <div class="text-muted">No images</div>
+                <% } else if (imgList.length === 1) { %>
+                  <img src="<%= imgList[0] %>" alt="OOTD">
+                <% } else { %>
+                  <div id="<%= carouselId %>" class="carousel slide w-100" data-bs-ride="carousel">
+                    <div class="carousel-inner">
+                      <% imgList.forEach((img, idx) => { %>
+                        <div class="carousel-item <%= idx === 0 ? 'active' : '' %>">
+                          <img src="<%= img %>" alt="OOTD">
+                        </div>
+                      <% }) %>
+                    </div>
+
+                    <button class="carousel-control-prev" type="button" data-bs-target="#<%= carouselId %>" data-bs-slide="prev">
+                      <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                      <span class="visually-hidden">Previous</span>
+                    </button>
+                    <button class="carousel-control-next" type="button" data-bs-target="#<%= carouselId %>" data-bs-slide="next">
+                      <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                      <span class="visually-hidden">Next</span>
+                    </button>
+                  </div>
+                <% } %>
+              </div>
+            </a>
+          </div>
+
+          <!-- RIGHT: caption + like + comments -->
+          <div class="col-lg-5">
+            <div class="ig-side">
+              <div class="ig-side-top">
+                <a href="/ootd/<%= post.post_id %>" style="text-decoration: none; color: inherit;">
+                  <% if (post.caption) { %>
+                    <div class="ig-caption"><%= post.caption %></div>
+                  <% } else { %>
+                    <div class="text-muted">No caption.</div>
+                  <% } %>
+                </a>
+              </div>
+
+              <div class="ig-comments">
+                <% if (post.comments && post.comments.length > 0) { %>
+                  <% post.comments.forEach(c => { %>
+                    <div class="ig-comment">
+                      <strong><%= c.username %></strong> <%= c.content %>
+                    </div>
+                  <% }) %>
+                <% } else { %>
+                  <div class="text-muted">No comments yet.</div>
+                <% } %>
+              </div>
+
+              <div class="ig-actions d-flex align-items-center justify-content-between">
+                <div class="d-flex align-items-center gap-2">
+                  <form action="/ootd/<%= post.post_id %>/like" method="POST" class="d-inline">
+                    <button type="submit"
+                      class="btn btn-sm ig-like-btn <%= isLiked(post) ? 'btn-danger' : 'btn-outline-danger' %>"
+                      <%= user ? '' : 'disabled' %>>
+                      ♥ <%= post.like_count || 0 %>
+                    </button>
+                  </form>
+                  <span class="text-muted small">💬 <%= post.comment_count || 0 %></span>
+                </div>
+                <small class="text-muted">
+                  <%= post.created_at ? new Date(post.created_at).toLocaleString() : '' %>
+                </small>
+              </div>
+
+              <div class="ig-add-comment">
+                <% if (user) { %>
+                  <form action="/ootd/<%= post.post_id %>/comment" method="POST" class="d-flex gap-2">
+                    <input name="content" class="form-control form-control-sm" placeholder="Add a comment..." maxlength="500" required>
+                    <button class="btn btn-sm btn-danger" type="submit">Post</button>
+                  </form>
+                <% } else { %>
+                  <div class="small">
+                    <a class="link-accent" href="/login">Sign in</a> to like or comment.
+                  </div>
+                <% } %>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    <% } %>
+
+    <!-- OOTD RESULTS (SEARCH MODE) -->
+    <% if (hasOotdResults) { %>
+      <div class="mt-4">
+        <h5 class="mb-3">OOTD Posts</h5>
+        <% ootdResults.forEach(post => { %>
+          <%- renderPost(post, 'searchPost') %>
+        <% }) %>
+      </div>
+    <% } %>
+
+    <!-- NO RESULTS -->
+    <% if (noResults) { %>
+      <div class="mt-4">
+        <div class="alert alert-light border-0 shadow-sm">
+          No results found for "<strong><%= q %></strong>".
+          <div class="hint-text mt-2">
+            Try: <strong>#jeans</strong>, <strong>#fyp</strong>, <strong>denim</strong>, or a username/email.
+          </div>
+        </div>
+      </div>
+    <% } %>
+
+    <!-- DEFAULT FEED (NOT SEARCHING) -->
+    <% if (!hasQuery) { %>
+      <% if (ootdPosts && ootdPosts.length > 0) { %>
+        <% ootdPosts.forEach(post => { %>
+          <%- renderPost(post, 'feedPost') %>
+        <% }) %>
+      <% } else { %>
+        <div class="empty-state">
+          <h5>No OOTD posts yet</h5>
+          <p class="mb-2">Be the first to post your outfit of the day.</p>
+          <% if (user) { %>
+            <a href="/create-ootd" class="link-accent">Create your first post</a>
+          <% } else { %>
+            <a href="/login" class="link-accent">Sign in to create a post</a>
+          <% } %>
+        </div>
+      <% } %>
+    <% } %>
+
+  </div>
+
+  <!-- Floating create button -->
+  <a class="floating-create-btn" href="<%= user ? '/create-ootd' : '/login' %>" title="Create OOTD">+</a>
+
+  <!-- Floating SwapMates apply widget (from your friend's file) -->
+  <% if (user && user.role !== 'sahm' && user.role !== 'admin') { %>
+    <div id="swapMatesApplyWidget" class="swapmates-apply-widget" data-user-id="<%= user.user_id %>">
+      <button type="button" class="swapmates-apply-close" id="swapMatesApplyClose" aria-label="Close">&times;</button>
+
+      <a href="/sahm/apply" class="swapmates-apply-link" title="Apply to be a SwapMates">
+        <div class="swapmates-apply-badge">SwapMates</div>
+        <div>
+          <div class="swapmates-apply-title">Earn with SwapMates</div>
+          <div class="swapmates-apply-sub">Apply to take delivery orders</div>
+        </div>
+      </a>
+    </div>
+  <% } %>
+
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+  <% if (user && user.role !== 'sahm' && user.role !== 'admin') { %>
+  <script>
+    (function () {
+      const widget = document.getElementById('swapMatesApplyWidget');
+      const closeBtn = document.getElementById('swapMatesApplyClose');
+      if (!widget || !closeBtn) return;
+
+      const userId = widget.getAttribute('data-user-id') || 'guest';
+      const storageKey = `hideSwapMatesApply_${userId}`;
+
+      if (sessionStorage.getItem(storageKey) === '1') {
+        widget.style.display = 'none';
+      }
+
+      closeBtn.addEventListener('click', function () {
+        widget.style.display = 'none';
+        sessionStorage.setItem(storageKey, '1');
+      });
+
+      document.querySelectorAll('a[href="/logout"]').forEach(a => {
+        a.addEventListener('click', function () {
+          sessionStorage.removeItem(storageKey);
+          // Clear chatbot data on logout
+          if (typeof clearAIChatbotDataOnLogout === 'function') {
+            clearAIChatbotDataOnLogout();
+          }
+        });
+      });
+    })();
+  </script>
+  <% } %>
+
+  <!-- NAVBAR MINIMIZE ON SCROLL SCRIPT -->
+  <script>
+    (function () {
+      const navbar = document.querySelector('.navbar');
+      if (!navbar) return;
+
+      // Find all OOTD posts
+      const posts = document.querySelectorAll('.ig-card');
+      let secondPostElement = null;
+      
+      if (posts.length >= 2) {
+        secondPostElement = posts[1];
+      }
+
+      window.addEventListener('scroll', function () {
+        if (!secondPostElement) {
+          navbar.classList.remove('minimized');
+          return;
+        }
+
+        // Get position of second post relative to viewport
+        const secondPostRect = secondPostElement.getBoundingClientRect();
+        const secondPostTop = secondPostRect.top;
+
+        // Minimize when second post reaches top half of viewport
+        if (secondPostTop < window.innerHeight / 2) {
+          navbar.classList.add('minimized');
+        } else {
+          navbar.classList.remove('minimized');
+        }
+      });
+    })();
+  </script>
+
+  <!-- ✅ FRIEND'S AI CHATBOT WIDGET -->
+  <%- include('ai-chatbot-widget') %>
+
+</body>
+</html>

@@ -1,0 +1,783 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>My Wardrobe | Clothes Swap</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Global Design System -->
+    <link href="/css/global-design.css" rel="stylesheet">
+
+    <style>
+        .page-header {
+            margin-top: 2rem;
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            background: linear-gradient(135deg, rgba(45, 90, 79, 0.05) 0%, rgba(74, 124, 107, 0.05) 100%);
+            border-radius: 16px;
+        }
+
+        .page-title {
+            font-size: 2rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin: 0;
+        }
+
+        .page-subtitle {
+            font-size: 0.95rem;
+            color: #6B7280;
+            margin-top: 0.3rem;
+        }
+
+        .wardrobe-card {
+            border-radius: 20px;
+            border: 1px solid rgba(45, 90, 79, 0.15);
+            box-shadow: 0 8px 32px rgba(45, 90, 79, 0.08);
+            background: white;
+        }
+
+        .item-card {
+            border-radius: 18px;
+            border: 1px solid rgba(45, 90, 79, 0.1);
+            overflow: hidden;
+            background: white;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 8px 20px rgba(15, 23, 42, 0.08);
+        }
+
+        .item-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 20px 40px rgba(45, 90, 79, 0.15);
+            border-color: rgba(45, 90, 79, 0.25);
+        }
+
+        /* image area */
+        .item-carousel {
+            background: linear-gradient(135deg, #f9fafb 0%, #f3f4f6 100%);
+            position: relative;
+        }
+
+        .item-image {
+            width: 100%;
+            height: auto;
+            max-height: 320px;
+            object-fit: contain;
+            background-color: transparent;
+        }
+
+        .item-body {
+            padding: 1rem;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .item-title {
+            font-size: 1rem;
+            font-weight: 800;
+            margin-bottom: 0.2rem;
+            color: var(--secondary);
+            line-height: 1.3;
+        }
+
+        .item-brand {
+            font-size: 0.8rem;
+            color: #6c757d;
+            font-weight: 500;
+        }
+
+        .chip-row {
+            margin-top: 0.6rem;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.35rem;
+        }
+
+        .chip {
+            border-radius: 999px;
+            padding: 0.2rem 0.65rem;
+            font-size: 0.7rem;
+            background-color: #f3f4f6;
+            color: #4b5563;
+            border: 1px solid #e5e7eb;
+            font-weight: 600;
+        }
+
+        .chip--category {
+            background: linear-gradient(135deg, #eef2ff 0%, #f5f3ff 100%);
+            border-color: #d8cfff;
+            color: #4338ca;
+            font-weight: 700;
+        }
+
+        .chip--size {
+            background: linear-gradient(135deg, #fef3c7 0%, #fed7aa 100%);
+            border-color: #fcd34d;
+            color: #92400e;
+            font-weight: 700;
+        }
+
+        .badge-swap {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+            color: #fff;
+            border-radius: 999px;
+            font-size: 0.7rem;
+            padding: 0.25rem 0.7rem;
+            font-weight: 700;
+            box-shadow: 0 4px 12px rgba(45, 90, 79, 0.2);
+        }
+
+        .badge-personal {
+            background: #f1f5f9;
+            color: #475569;
+            border-radius: 999px;
+            font-size: 0.7rem;
+            padding: 0.25rem 0.7rem;
+            font-weight: 700;
+            border: 1px solid #cbd5e1;
+        }
+
+        .badge-public {
+            background: linear-gradient(135deg, #d1e7dd 0%, #c3e6cb 100%);
+            color: #0f5132;
+            border-radius: 999px;
+            font-size: 0.7rem;
+            padding: 0.25rem 0.7rem;
+            font-weight: 700;
+            border: 1px solid #badbcc;
+        }
+
+        .badge-private {
+            background: linear-gradient(135deg, #ffe4e6 0%, #f8d7da 100%);
+            color: #9f1239;
+            border-radius: 999px;
+            font-size: 0.7rem;
+            padding: 0.25rem 0.7rem;
+            font-weight: 700;
+            border: 1px solid #f5c6cb;
+        }
+
+        .item-meta {
+            font-size: 0.75rem;
+            color: #6c757d;
+            margin-top: 0.6rem;
+            flex: 1;
+            line-height: 1.5;
+        }
+
+        .item-footer {
+            padding: 0.75rem 1rem;
+            border-top: 1px solid rgba(45, 90, 79, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: linear-gradient(90deg, rgba(248,250,252,0.95), rgba(255,247,247,0.95));
+            margin-top: auto;
+        }
+
+        .small-link {
+            font-size: 0.78rem;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.2s ease;
+        }
+
+        .small-link.text-danger {
+            color: #dc2626;
+        }
+
+        .small-link.text-secondary {
+            color: var(--primary);
+        }
+
+        .small-link.text-danger:hover {
+            color: #991b1b;
+            text-decoration: underline;
+        }
+
+        .small-link.text-secondary:hover {
+            color: var(--accent);
+            text-decoration: underline;
+        }
+
+        .alert-message {
+            border-radius: 12px;
+            border: none;
+            font-weight: 500;
+        }
+
+        .alert-success {
+            background: linear-gradient(135deg, #d1e7dd 0%, #c3e6cb 100%);
+            color: #0f5132;
+            border-left: 4px solid #198754;
+        }
+
+        .alert-danger {
+            background: linear-gradient(135deg, #f8d7da 0%, #f5c2c7 100%);
+            color: #842029;
+            border-left: 4px solid #dc3545;
+        }
+
+        .nav-tabs .nav-link {
+            border-radius: 12px 12px 0 0;
+            border: none;
+            color: #6c757d;
+            font-size: 0.95rem;
+            font-weight: 600;
+            transition: all 0.2s ease;
+            padding: 0.75rem 1.5rem;
+        }
+
+        .nav-tabs .nav-link.active {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+            color: white;
+            border-bottom: none;
+            box-shadow: 0 4px 12px rgba(45, 90, 79, 0.2);
+        }
+
+        .nav-tabs .nav-link:hover:not(.active) {
+            background: rgba(45, 90, 79, 0.05);
+            color: var(--primary);
+        }
+
+        .nav-tabs {
+            border-bottom: 1px solid rgba(45, 90, 79, 0.1);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: #6c757d;
+        }
+
+        .empty-state h5 {
+            font-weight: 700;
+            color: var(--secondary);
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .empty-state p {
+            font-size: 0.95rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .btn-primary-custom {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+            border: none;
+            border-radius: 12px;
+            font-weight: 700;
+            padding: 0.65rem 1.6rem;
+            font-size: 0.9rem;
+            box-shadow: 0 8px 20px rgba(45, 90, 79, 0.25);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            color: white;
+        }
+
+        .btn-primary-custom:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 28px rgba(45, 90, 79, 0.35);
+            color: white;
+        }
+
+        .btn-primary-custom:active {
+            transform: translateY(0);
+            box-shadow: 0 6px 16px rgba(45, 90, 79, 0.25);
+        }
+
+        /* carousel controls */
+        .carousel-control-prev,
+        .carousel-control-next {
+            width: 12%;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            transition: all 0.2s ease;
+        }
+
+        .carousel-control-prev:hover,
+        .carousel-control-next:hover {
+            background: rgba(0, 0, 0, 0.5);
+        }
+
+        .carousel-control-prev-icon,
+        .carousel-control-next-icon {
+            background-size: 60%;
+            filter: drop-shadow(0 2px 6px rgba(0,0,0,0.4));
+        }
+
+        /* top-right floating chip */
+        .item-status-pill {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            z-index: 3;
+            background: linear-gradient(135deg, rgba(45, 90, 79, 0.9) 0%, rgba(26, 26, 26, 0.9) 100%);
+            color: #f9fafb;
+            border-radius: 999px;
+            padding: 0.3rem 0.7rem;
+            font-size: 0.7rem;
+            display: flex;
+            align-items: center;
+            gap: 0.35rem;
+            font-weight: 700;
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .item-status-dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 999px;
+            background-color: #22c55e;
+            box-shadow: 0 0 8px rgba(34, 197, 94, 0.6);
+        }
+
+        .item-status-dot.personal-only {
+            background-color: #f97316;
+            box-shadow: 0 0 8px rgba(249, 115, 22, 0.6);
+        }
+
+        /* Frutiger Metro Dynamic Background */
+        body {
+            background: linear-gradient(45deg, #E8F4F8, #F0E8F8, #F8F0E8, #E8F8F0, #F8F0F0, #E8F4F8);
+            background-size: 400% 400%;
+            animation: metro-flow 30s ease infinite;
+            position: relative;
+            min-height: 100vh;
+            overflow-x: hidden;
+            color: #333;
+        }
+        
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: 
+                linear-gradient(90deg, rgba(0, 120, 215, 0.12) 0%, transparent 30%, transparent 70%, rgba(0, 120, 215, 0.12) 100%),
+                linear-gradient(180deg, rgba(255, 140, 0, 0.08) 0%, transparent 40%, transparent 60%, rgba(255, 140, 0, 0.08) 100%),
+                linear-gradient(45deg, rgba(107, 142, 35, 0.1) 0%, transparent 50%, transparent 50%, rgba(107, 142, 35, 0.1) 100%);
+            animation: metro-grid 20s ease-in-out infinite;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        body::after {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: 
+                linear-gradient(90deg, transparent 0%, rgba(0, 120, 215, 0.05) 25%, rgba(0, 120, 215, 0.05) 75%, transparent 100%),
+                linear-gradient(0deg, transparent 0%, rgba(255, 140, 0, 0.04) 50%, transparent 100%);
+            background-size: 200% 100%, 100% 200%;
+            animation: metro-slide 25s ease-in-out infinite;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        @keyframes metro-flow {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        @keyframes metro-grid {
+            0%, 100% { transform: scale(1) translateY(0); filter: brightness(1); }
+            25% { transform: scale(1.02) translateY(-5px); filter: brightness(1.03); }
+            50% { transform: scale(1.01) translateY(-10px); filter: brightness(1.05); }
+            75% { transform: scale(1.02) translateY(-5px); filter: brightness(1.03); }
+        }
+
+        @keyframes metro-slide {
+            0%, 100% { background-position: 0% 0%, 0% 0%; }
+            50% { background-position: 100% 0%, 0% 100%; }
+        }
+
+        body > * {
+            position: relative;
+            z-index: 1;
+        }
+    </style>
+</head>
+<body>
+
+<!-- AI Chatbot Widget -->
+<%- include('ai-chatbot-widget') %>
+
+<!-- NAVBAR -->
+<nav class="navbar navbar-expand-lg navbar-light">
+    <div class="container-fluid px-4">
+        <a class="navbar-brand" href="/">Clothes <span class="brand-red">Swap</span></a>
+
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="mainNavbar">
+            <ul class="navbar-nav ms-auto mb-2 mb-lg-0" style="display: flex; align-items: center; gap: 0.8rem;">
+                <li class="nav-item"><a class="nav-link" aria-current="page" href="/">Home</a></li>
+
+                <% if (user) { %>
+                    <li class="nav-item"><a class="nav-link" href="/inbox">Inbox</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/wardrobe">Wardrobe</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/swap">Swap</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/sahm">SwapMates</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/profile">Profile</a></li>
+                    <li class="nav-item ms-lg-2"><a class="btn btn-sm" style="background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%); color: white; border: none; border-radius: 10px; font-weight: 700; padding: 0.7rem 1.6rem; transition: all 0.3s ease; box-shadow: 0 4px 12px rgba(45, 90, 79, 0.2); font-size: 0.95rem; font-family: 'Cinzel', serif; letter-spacing: 0.08em; text-transform: uppercase; display: flex; align-items: center;" href="/logout" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 16px rgba(45, 90, 79, 0.3)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 12px rgba(45, 90, 79, 0.2)';">Logout</a></li>
+                <% } else { %>
+                    <li class="nav-item ms-lg-2"><a class="btn btn-sm" style="background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%); color: white; border: none; border-radius: 10px; font-weight: 700; padding: 0.7rem 1.6rem; transition: all 0.3s ease; box-shadow: 0 4px 12px rgba(45, 90, 79, 0.2); font-size: 0.95rem; font-family: 'Cinzel', serif; letter-spacing: 0.08em; text-transform: uppercase; display: flex; align-items: center;" href="/login" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 16px rgba(45, 90, 79, 0.3)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 12px rgba(45, 90, 79, 0.2)';">Sign In</a></li>
+                <% } %>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div class="container py-4">
+
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center page-header">
+        <div>
+            <div class="page-title">My Wardrobe</div>
+            <div class="page-subtitle">
+                Manage your personal items and pieces available for swapping.
+            </div>
+        </div>
+        <div>
+            <a href="/wardrobe/upload" class="btn btn-primary-custom">
+                + Add Item
+            </a>
+        </div>
+    </div>
+
+    <!-- Flash / local messages -->
+    <div class="mt-2">
+        <% if (typeof success_msg !== 'undefined' && success_msg && success_msg.length > 0) { %>
+            <div class="alert alert-success alert-message"><%= success_msg %></div>
+        <% } %>
+
+        <% if (typeof error_msg !== 'undefined' && error_msg && error_msg.length > 0) { %>
+            <div class="alert alert-danger alert-message"><%= error_msg %></div>
+        <% } %>
+
+        <% if (message) { %>
+            <div class="alert alert-info alert-message"><%= message %></div>
+        <% } %>
+    </div>
+
+    <!-- Tabs: Personal / Swap -->
+    <div class="card wardrobe-card mt-3">
+        <div class="card-body">
+            <ul class="nav nav-tabs" id="wardrobeTabs" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active" id="personal-tab" data-bs-toggle="tab"
+                            data-bs-target="#personal" type="button" role="tab">
+                        Personal (<%= personalItems ? personalItems.length : 0 %>)
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="swap-tab" data-bs-toggle="tab"
+                            data-bs-target="#swap" type="button" role="tab">
+                        Swap (<%= swapItems ? swapItems.length : 0 %>)
+                    </button>
+                </li>
+            </ul>
+
+            <div class="tab-content mt-3" id="wardrobeTabsContent">
+                <!-- PERSONAL TAB -->
+                <div class="tab-pane fade show active" id="personal" role="tabpanel" aria-labelledby="personal-tab">
+                    <% if (personalItems && personalItems.length > 0) { %>
+                        <div class="row g-3">
+                            <% personalItems.forEach(item => { 
+                                const hasImg1 = !!item.image_url_1;
+                                const hasImg2 = !!item.image_url_2;
+                                const hasImg3 = !!item.image_url_3;
+                                const imgCount = [hasImg1, hasImg2, hasImg3].filter(Boolean).length;
+                                const carouselId = `itemCarousel-${item.item_id}`;
+                            %>
+                                <div class="col-12 col-md-6 col-lg-4">
+                                    <div class="item-card">
+
+                                        <!-- top-right status pill -->
+                                        <div class="item-status-pill">
+                                            <span class="item-status-dot <%= item.is_for_swap === 1 ? '' : 'personal-only' %>"></span>
+                                            <%= item.is_for_swap === 1 ? 'Swap' : 'Personal only' %>
+                                        </div>
+
+                                        <!-- Image / Carousel -->
+                                        <% if (imgCount > 0) { %>
+                                            <div id="<%= carouselId %>" class="carousel slide item-carousel" data-bs-ride="false">
+                                                <div class="carousel-inner">
+                                                    <% let first = true; %>
+                                                    <% if (hasImg1) { %>
+                                                        <div class="carousel-item <%= first ? 'active' : '' %>">
+                                                            <img src="<%= item.image_url_1 %>" class="d-block w-100 item-image" alt="Item image 1">
+                                                        </div>
+                                                        <% first = false; %>
+                                                    <% } %>
+                                                    <% if (hasImg2) { %>
+                                                        <div class="carousel-item <%= first ? 'active' : '' %>">
+                                                            <img src="<%= item.image_url_2 %>" class="d-block w-100 item-image" alt="Item image 2">
+                                                        </div>
+                                                        <% first = false; %>
+                                                    <% } %>
+                                                    <% if (hasImg3) { %>
+                                                        <div class="carousel-item <%= first ? 'active' : '' %>">
+                                                            <img src="<%= item.image_url_3 %>" class="d-block w-100 item-image" alt="Item image 3">
+                                                        </div>
+                                                        <% first = false; %>
+                                                    <% } %>
+                                                </div>
+
+                                                <% if (imgCount > 1) { %>
+                                                    <button class="carousel-control-prev" type="button" data-bs-target="#<%= carouselId %>" data-bs-slide="prev">
+                                                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                                        <span class="visually-hidden">Previous</span>
+                                                    </button>
+                                                    <button class="carousel-control-next" type="button" data-bs-target="#<%= carouselId %>" data-bs-slide="next">
+                                                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                                        <span class="visually-hidden">Next</span>
+                                                    </button>
+                                                <% } %>
+                                            </div>
+                                        <% } else { %>
+                                            <div class="item-image d-flex align-items-center justify-content-center text-muted">
+                                                No image
+                                            </div>
+                                        <% } %>
+
+                                        <!-- Card body -->
+                                        <div class="item-body">
+                                            <div class="d-flex justify-content-between align-items-start mb-1">
+                                                <div>
+                                                    <div class="item-title"><%= item.title || 'Untitled item' %></div>
+                                                    <div class="item-brand">
+                                                        <%= item.brand_name || 'Unknown brand' %>
+                                                    </div>
+                                                </div>
+                                                <div class="text-end">
+                                                    <% if (item.is_for_swap === 1) { %>
+                                                        <span class="badge-swap">Swap</span>
+                                                    <% } else { %>
+                                                        <span class="badge-personal">Personal</span>
+                                                    <% } %>
+                                                </div>
+                                            </div>
+
+                                            <!-- chips -->
+                                            <div class="chip-row">
+                                                <% if (item.category) { %>
+                                                    <span class="chip chip--category"><%= item.category %></span>
+                                                <% } %>
+                                                <% if (item.size_label) { %>
+                                                    <span class="chip chip--size">Size: <%= item.size_label %></span>
+                                                <% } %>
+                                            </div>
+
+                                            <div class="item-meta">
+                                                <% if (item.color) { %>
+                                                    <span><strong>Color:</strong> <%= item.color %></span><br>
+                                                <% } %>
+                                                <% if (item.condition_grade) { %>
+                                                    <span><strong>Condition:</strong> <%= item.condition_grade %></span><br>
+                                                <% } %>
+
+                                                <!-- Description -->
+                                                <% if (item.description) { %>
+                                                    <div class="mt-2" style="font-size: 0.78rem; color: #4b5563; line-height: 1.25;">
+                                                        <%= item.description %>
+                                                    </div>
+                                                <% } %>
+                                            </div>
+                                        </div>
+
+                                        <div class="item-footer">
+                                            <div>
+                                                <% if (item.is_public === 1) { %>
+                                                    <span class="badge-public">Public</span>
+                                                <% } else { %>
+                                                    <span class="badge-private">Private</span>
+                                                <% } %>
+                                            </div>
+                                            <div>
+                                                <a href="/wardrobe/edit/<%= item.item_id %>" class="small-link text-secondary me-2">
+                                                    Edit
+                                                </a>
+                                                <a href="/wardrobe/delete/<%= item.item_id %>" class="small-link text-danger">
+                                                    Delete
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            <% }) %>
+                        </div>
+                    <% } else { %>
+                        <div class="empty-state">
+                            <h5>No personal items yet</h5>
+                            <p>Start building your wardrobe by adding your first item.</p>
+                            <a href="/wardrobe/upload" class="btn btn-primary-custom mt-2">
+                                + Add Item
+                            </a>
+                        </div>
+                    <% } %>
+                </div>
+
+                <!-- SWAP TAB -->
+                <div class="tab-pane fade" id="swap" role="tabpanel" aria-labelledby="swap-tab">
+                    <% if (swapItems && swapItems.length > 0) { %>
+                        <div class="row g-3">
+                            <% swapItems.forEach(item => { 
+                                const hasImg1 = !!item.image_url_1;
+                                const hasImg2 = !!item.image_url_2;
+                                const hasImg3 = !!item.image_url_3;
+                                const imgCount = [hasImg1, hasImg2, hasImg3].filter(Boolean).length;
+                                const carouselId = `itemCarousel-swap-${item.item_id}`;
+                            %>
+                                <div class="col-12 col-md-6 col-lg-4">
+                                    <div class="item-card">
+
+                                        <!-- top-right status pill -->
+                                        <div class="item-status-pill">
+                                            <span class="item-status-dot"></span>
+                                            Swap
+                                        </div>
+
+                                        <!-- Image / Carousel -->
+                                        <% if (imgCount > 0) { %>
+                                            <div id="<%= carouselId %>" class="carousel slide item-carousel" data-bs-ride="false">
+                                                <div class="carousel-inner">
+                                                    <% let first = true; %>
+                                                    <% if (hasImg1) { %>
+                                                        <div class="carousel-item <%= first ? 'active' : '' %>">
+                                                            <img src="<%= item.image_url_1 %>" class="d-block w-100 item-image" alt="Item image 1">
+                                                        </div>
+                                                        <% first = false; %>
+                                                    <% } %>
+                                                    <% if (hasImg2) { %>
+                                                        <div class="carousel-item <%= first ? 'active' : '' %>">
+                                                            <img src="<%= item.image_url_2 %>" class="d-block w-100 item-image" alt="Item image 2">
+                                                        </div>
+                                                        <% first = false; %>
+                                                    <% } %>
+                                                    <% if (hasImg3) { %>
+                                                        <div class="carousel-item <%= first ? 'active' : '' %>">
+                                                            <img src="<%= item.image_url_3 %>" class="d-block w-100 item-image" alt="Item image 3">
+                                                        </div>
+                                                        <% first = false; %>
+                                                    <% } %>
+                                                </div>
+
+                                                <% if (imgCount > 1) { %>
+                                                    <button class="carousel-control-prev" type="button" data-bs-target="#<%= carouselId %>" data-bs-slide="prev">
+                                                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                                        <span class="visually-hidden">Previous</span>
+                                                    </button>
+                                                    <button class="carousel-control-next" type="button" data-bs-target="#<%= carouselId %>" data-bs-slide="next">
+                                                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                                        <span class="visually-hidden">Next</span>
+                                                    </button>
+                                                <% } %>
+                                            </div>
+                                        <% } else { %>
+                                            <div class="item-image d-flex align-items-center justify-content-center text-muted">
+                                                No image
+                                            </div>
+                                        <% } %>
+
+                                        <!-- Card body -->
+                                        <div class="item-body">
+                                            <div class="d-flex justify-content-between align-items-start mb-1">
+                                                <div>
+                                                    <div class="item-title"><%= item.title || 'Untitled item' %></div>
+                                                    <div class="item-brand">
+                                                        <%= item.brand_name || 'Unknown brand' %>
+                                                    </div>
+                                                </div>
+                                                <div class="text-end">
+                                                    <span class="badge-swap">Swap</span>
+                                                </div>
+                                            </div>
+
+                                            <!-- chips -->
+                                            <div class="chip-row">
+                                                <% if (item.category) { %>
+                                                    <span class="chip chip--category"><%= item.category %></span>
+                                                <% } %>
+                                                <% if (item.size_label) { %>
+                                                    <span class="chip chip--size">Size: <%= item.size_label %></span>
+                                                <% } %>
+                                            </div>
+
+                                            <div class="item-meta">
+                                                <% if (item.color) { %>
+                                                    <span><strong>Color:</strong> <%= item.color %></span><br>
+                                                <% } %>
+                                                <% if (item.condition_grade) { %>
+                                                    <span><strong>Condition:</strong> <%= item.condition_grade %></span><br>
+                                                <% } %>
+
+                                                 <!-- Description -->
+                                                <% if (item.description) { %>
+                                                    <div class="mt-2" style="font-size: 0.78rem; color: #4b5563; line-height: 1.25;">
+                                                        <%= item.description %>
+                                                    </div>
+                                                <% } %>
+                                                
+                                            </div>
+                                        </div>
+
+                                        <div class="item-footer">
+                                            <div>
+                                                <% if (item.is_public === 1) { %>
+                                                    <span class="badge-public">Public</span>
+                                                <% } else { %>
+                                                    <span class="badge-private">Private</span>
+                                                <% } %>
+                                            </div>
+                                            <div>
+                                                <a href="/wardrobe/edit/<%= item.item_id %>" class="small-link text-secondary me-2">
+                                                    Edit
+                                                </a>
+                                                <a href="/wardrobe/delete/<%= item.item_id %>" class="small-link text-danger">
+                                                    Delete
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            <% }) %>
+                        </div>
+                    <% } else { %>
+                        <div class="empty-state">
+                            <h5>No swap items yet</h5>
+                            <p>Mark some of your clothes as “Swap” to make them available for swapping.</p>
+                            <a href="/wardrobe/upload" class="btn btn-primary-custom mt-2">
+                                + Add Swap Item
+                            </a>
+                        </div>
+                    <% } %>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Admin | Users</title>
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Global Design System -->
+  <link href="/css/global-design.css" rel="stylesheet">
+
+  <style>
+    .navbar-brand {
+      font-weight: 800;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      font-size: 1rem;
+    }
+
+    .brand-red { color: #e60000; }
+
+    .page-wrap { padding: 24px 0 60px; }
+
+    .card-shell {
+      border: none;
+      border-radius: 18px;
+      box-shadow: 0 10px 25px rgba(15,23,42,0.08);
+      overflow: hidden;
+      background: #fff;
+    }
+
+    .topbar {
+      padding: 16px 16px 10px;
+      border-bottom: 1px solid #eef2f7;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .title {
+      font-weight: 800;
+      font-size: 1.1rem;
+      margin: 0;
+    }
+
+    .muted { color: #6b7280; font-size: .85rem; }
+
+    .pill {
+      border-radius: 999px;
+      padding: 6px 10px;
+      background: #f3f4f6;
+      border: 1px solid #e5e7eb;
+      font-size: .8rem;
+    }
+
+    .search-row {
+      padding: 12px 16px 16px;
+      border-bottom: 1px solid #eef2f7;
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .table thead th {
+      font-size: .78rem;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      color: #6b7280;
+      background: #f9fafb;
+      border-bottom: 1px solid #eef2f7 !important;
+    }
+
+    .table tbody td {
+      vertical-align: middle;
+      border-top: 1px solid #f1f5f9;
+    }
+
+    .avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 999px;
+      object-fit: cover;
+      border: 2px solid #e60000;
+      background: #fff;
+    }
+
+    .avatar-initial {
+      width: 36px;
+      height: 36px;
+      border-radius: 999px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      background: #fee2e2;
+      color: #b91c1c;
+      border: 2px solid #e60000;
+      font-size: .85rem;
+    }
+
+    .role-badge {
+      border-radius: 999px;
+      padding: 4px 10px;
+      font-size: .75rem;
+      border: 1px solid #e5e7eb;
+      background: #f3f4f6;
+      color: #374151;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .role-dot { width: 8px; height: 8px; border-radius: 999px; display: inline-block; }
+    .dot-admin { background: #ef4444; }
+    .dot-sahm  { background: #f59e0b; }
+    .dot-user  { background: #22c55e; }
+
+    .btn-round { border-radius: 999px; }
+
+    .danger-zone {
+      border-radius: 14px;
+      padding: 14px;
+      background: #fff1f2;
+      border: 1px solid #fecdd3;
+    }
+
+    /* Frutiger Metro Dynamic Background */
+    body {
+        background: linear-gradient(45deg, #E8F4F8, #F0E8F8, #F8F0E8, #E8F8F0, #F8F0F0, #E8F4F8);
+        background-size: 400% 400%;
+        animation: metro-flow 30s ease infinite;
+        position: relative;
+        min-height: 100vh;
+        overflow-x: hidden;
+        color: #333;
+    }
+    
+    body::before {
+        content: '';
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-image: 
+            linear-gradient(90deg, rgba(0, 120, 215, 0.12) 0%, transparent 30%, transparent 70%, rgba(0, 120, 215, 0.12) 100%),
+            linear-gradient(180deg, rgba(255, 140, 0, 0.08) 0%, transparent 40%, transparent 60%, rgba(255, 140, 0, 0.08) 100%),
+            linear-gradient(45deg, rgba(107, 142, 35, 0.1) 0%, transparent 50%, transparent 50%, rgba(107, 142, 35, 0.1) 100%);
+        animation: metro-grid 20s ease-in-out infinite;
+        pointer-events: none;
+        z-index: 0;
+    }
+
+    body::after {
+        content: '';
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-image: 
+            linear-gradient(90deg, transparent 0%, rgba(0, 120, 215, 0.05) 25%, rgba(0, 120, 215, 0.05) 75%, transparent 100%),
+            linear-gradient(0deg, transparent 0%, rgba(255, 140, 0, 0.04) 50%, transparent 100%);
+        background-size: 200% 100%, 100% 200%;
+        animation: metro-slide 25s ease-in-out infinite;
+        pointer-events: none;
+        z-index: 0;
+    }
+
+    @keyframes metro-flow {
+        0% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+        100% { background-position: 0% 50%; }
+    }
+
+    @keyframes metro-grid {
+        0%, 100% { transform: scale(1) translateY(0); filter: brightness(1); }
+        25% { transform: scale(1.02) translateY(-5px); filter: brightness(1.03); }
+        50% { transform: scale(1.01) translateY(-10px); filter: brightness(1.05); }
+        75% { transform: scale(1.02) translateY(-5px); filter: brightness(1.03); }
+    }
+
+    @keyframes metro-slide {
+        0%, 100% { background-position: 0% 0%, 0% 0%; }
+        50% { background-position: 100% 0%, 0% 100%; }
+    }
+
+    body > * {
+        position: relative;
+        z-index: 1;
+    }
+  </style>
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
+  <div class="container">
+      <a class="navbar-brand" href="/adminpage">Clothes <span class="brand-red">Swap</span></a>
+    </a>
+
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div id="mainNavbar" class="collapse navbar-collapse">
+      <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+        <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+
+        <% if (user) { %>
+
+          <% if (user.role && user.role.toLowerCase() === 'admin') { %>
+            <li class="nav-item"><a class="nav-link active" aria-current="page" href="/admin">Admin</a></li>
+          <% } %>
+
+          <li class="nav-item ms-lg-3">
+            <a href="/logout" class="btn btn-sm" style="background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%); color: white; border: none; border-radius: 10px; font-weight: 700; padding: 0.5rem 1.2rem; transition: all 0.3s ease; box-shadow: 0 4px 12px rgba(45, 90, 79, 0.2);" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 16px rgba(45, 90, 79, 0.3)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 12px rgba(45, 90, 79, 0.2)';">Logout</a>
+          </li>
+        <% } else { %>
+          <li class="nav-item ms-lg-3">
+            <a href="/login" class="btn btn-sm btn-outline-danger btn-round">Sign In</a>
+          </li>
+        <% } %>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<div class="container page-wrap">
+
+  <!-- Flash messages -->
+  <% if (typeof success_msg !== 'undefined' && success_msg && success_msg.length > 0) { %>
+    <div class="alert alert-success" style="border-radius:12px;"><%= success_msg %></div>
+  <% } %>
+
+  <% if (typeof error_msg !== 'undefined' && error_msg && error_msg.length > 0) { %>
+    <div class="alert alert-danger" style="border-radius:12px;"><%= error_msg %></div>
+  <% } %>
+
+  <% if (typeof message !== 'undefined' && message) { %>
+    <div class="alert alert-info" style="border-radius:12px;"><%= message %></div>
+  <% } %>
+
+  <div class="card-shell">
+    <div class="topbar">
+      <div>
+        <h1 class="title mb-1">Admin — Users</h1>
+        <div class="muted">Manage usernames, emails, roles, and termination.</div>
+      </div>
+
+      <div class="d-flex align-items-center gap-2">
+        <div class="pill">
+          Showing: <strong id="userCount"><%= users ? users.length : 0 %></strong>
+        </div>
+        <a href="/admin" class="btn btn-sm btn-outline-secondary btn-round">Back to dashboard</a>
+      </div>
+    </div>
+
+    <div class="search-row">
+      <input id="searchInput" class="form-control" placeholder="Search by username, email, role, gender..." style="max-width:420px;">
+      <div class="muted">Tip: try "admin", "swapmates", or an email domain.</div>
+    </div>
+
+    <div class="table-responsive">
+      <table class="table mb-0 align-middle">
+        <thead>
+          <tr>
+            <th style="width:70px;">User</th>
+            <th>Username</th>
+            <th>Email</th>
+            <th style="width:120px;">Gender</th>
+            <th style="width:140px;">Role</th>
+            <th style="width:240px;">Actions</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <% if (users && users.length > 0) { %>
+            <% users.forEach(u => { %>
+              <tr
+                class="user-row"
+                data-search="<%= (u.username || '') + ' ' + (u.email || '') + ' ' + (u.gender || '') + ' ' + (u.role || '') %>"
+              >
+                <td>
+                  <% if (u.profile_image_url) { %>
+                    <img src="<%= u.profile_image_url %>" class="avatar" alt="Profile">
+                  <% } else { %>
+                    <span class="avatar-initial">
+                      <%= u.username ? u.username.charAt(0).toUpperCase() : '?' %>
+                    </span>
+                  <% } %>
+                </td>
+
+                <td style="font-weight:700;">
+                  <a
+                    href="/admin/users/<%= u.user_id %>/content"
+                    class="text-decoration-none"
+                    style="color:inherit;"
+                    title="View wardrobe & posts"
+                  >
+                    <%= u.username || '-' %>
+                  </a>
+                  <div class="muted">#<%= u.user_id %></div>
+                </td>
+
+                <td><%= u.email || '-' %></td>
+
+                <td>
+                  <span class="muted"><%= u.gender || '-' %></span>
+                </td>
+
+                <td>
+                  <%
+                    const role = (u.role || 'user').toLowerCase();
+                    const dotClass = role === 'admin' ? 'dot-admin' : (role === 'sahm' ? 'dot-sahm' : 'dot-user');
+                  %>
+                  <span class="role-badge">
+                    <span class="role-dot <%= dotClass %>"></span>
+                    <%= role %>
+                  </span>
+                </td>
+
+                <td>
+                  <div class="d-flex gap-2 flex-wrap">
+                    <a
+                      class="btn btn-sm btn-outline-primary btn-round"
+                      href="/admin/users/<%= u.user_id %>/content"
+                    >
+                      Content
+                    </a>
+
+                    <button
+                      class="btn btn-sm btn-outline-secondary btn-round"
+                      data-bs-toggle="modal"
+                      data-bs-target="#editUserModal"
+
+                      data-user-id="<%= u.user_id %>"
+                      data-username="<%= u.username || '' %>"
+                      data-email="<%= u.email || '' %>"
+                      data-gender="<%= u.gender || '' %>"
+                      data-role="<%= (u.role || 'user') %>"
+                    >
+                      Edit
+                    </button>
+
+                    <button
+                      class="btn btn-sm btn-outline-danger btn-round"
+                      data-bs-toggle="modal"
+                      data-bs-target="#deleteUserModal"
+
+                      data-user-id="<%= u.user_id %>"
+                      data-username="<%= u.username || '' %>"
+                      data-email="<%= u.email || '' %>"
+                    >
+                      Delete
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            <% }) %>
+          <% } else { %>
+            <tr>
+              <td colspan="6" class="text-center p-4">
+                <div style="font-weight:800;">No users found</div>
+                <div class="muted">Your users table might be empty.</div>
+              </td>
+            </tr>
+          <% } %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- EDIT MODAL -->
+<div class="modal fade" id="editUserModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <form id="editUserForm" method="POST" action="">
+        <div class="modal-header">
+          <h5 class="modal-title">Edit User</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+
+        <div class="modal-body">
+          <div class="mb-3">
+            <label class="form-label">Username</label>
+            <input type="text" class="form-control" name="username" id="editUsername" required>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Email</label>
+            <input type="email" class="form-control" name="email" id="editEmail" required>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Gender</label>
+            <select class="form-select" name="gender" id="editGender">
+              <option value="">-- Select --</option>
+              <option value="male">Male</option>
+              <option value="female">Female</option>
+              <option value="other">Other</option>
+              <option value="prefer not to say">Prefer not to say</option>
+            </select>
+          </div>
+
+          <div class="mb-0">
+            <label class="form-label">Role</label>
+            <select class="form-select" name="role" id="editRole">
+              <option value="user">User</option>
+              <option value="sahm">SwapMates</option>
+              <option value="admin">Admin</option>
+            </select>
+            <div class="muted mt-2">Changing role affects access and features.</div>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline-secondary btn-round" data-bs-dismiss="modal">Cancel</button>
+          <button type="submit" class="btn btn-primary btn-round">Save Changes</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- DELETE MODAL -->
+<div class="modal fade" id="deleteUserModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <form id="deleteUserForm" method="POST" action="">
+        <div class="modal-header">
+          <h5 class="modal-title text-danger">Delete User</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+
+        <div class="modal-body">
+          <div class="danger-zone">
+            <div style="font-weight:800;">You are about to delete:</div>
+            <div class="mt-1">
+              <span id="deleteUsername" style="font-weight:800;"></span>
+              <div class="muted" id="deleteEmail"></div>
+            </div>
+            <div class="mt-2 muted">
+              This action is permanent. A termination email will be sent to the user.
+            </div>
+          </div>
+
+          <div class="mt-3">
+            <label class="form-label">Termination Reason (will be emailed)</label>
+            <textarea
+              class="form-control"
+              name="reason"
+              id="deleteReason"
+              rows="4"
+              required
+              placeholder="Example: Your account has been terminated due to repeated policy violations and suspicious activity."
+            ></textarea>
+            <div class="muted mt-2">Keep it professional — this will be visible to the user.</div>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline-secondary btn-round" data-bs-dismiss="modal">Cancel</button>
+          <button type="submit" class="btn btn-danger btn-round">Delete & Email</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+  // Client-side search filter
+  const searchInput = document.getElementById('searchInput');
+  const rows = document.querySelectorAll('.user-row');
+  const userCountEl = document.getElementById('userCount');
+
+  function applyFilter() {
+    const q = (searchInput.value || '').toLowerCase().trim();
+    let shown = 0;
+
+    rows.forEach(r => {
+      const hay = (r.getAttribute('data-search') || '').toLowerCase();
+      const ok = hay.includes(q);
+      r.style.display = ok ? '' : 'none';
+      if (ok) shown++;
+    });
+
+    if (userCountEl) userCountEl.textContent = shown;
+  }
+
+  if (searchInput) {
+    searchInput.addEventListener('input', applyFilter);
+  }
+
+  // Edit modal populate + set form action
+  const editModal = document.getElementById('editUserModal');
+  const editForm = document.getElementById('editUserForm');
+
+  editModal.addEventListener('show.bs.modal', function (event) {
+    const btn = event.relatedTarget;
+    const id = btn.getAttribute('data-user-id');
+
+    document.getElementById('editUsername').value = btn.getAttribute('data-username') || '';
+    document.getElementById('editEmail').value = btn.getAttribute('data-email') || '';
+    document.getElementById('editGender').value = btn.getAttribute('data-gender') || '';
+    document.getElementById('editRole').value = (btn.getAttribute('data-role') || 'user').toLowerCase();
+
+    // Route: POST /admin/users/:id/edit
+    editForm.action = `/admin/users/${id}/edit`;
+  });
+
+  // Delete modal populate + set form action
+  const deleteModal = document.getElementById('deleteUserModal');
+  const deleteForm = document.getElementById('deleteUserForm');
+
+  deleteModal.addEventListener('show.bs.modal', function (event) {
+    const btn = event.relatedTarget;
+    const id = btn.getAttribute('data-user-id');
+    const uname = btn.getAttribute('data-username') || 'Unknown';
+    const email = btn.getAttribute('data-email') || '-';
+
+    document.getElementById('deleteUsername').textContent = uname;
+    document.getElementById('deleteEmail').textContent = email;
+
+    const defaultReason =
+      `Your account has been terminated due to violations of our platform policies and/or misuse of the service.`;
+
+    const reasonBox = document.getElementById('deleteReason');
+    if (reasonBox) reasonBox.value = defaultReason;
+
+    // Route: POST /admin/users/:id/delete
+    deleteForm.action = `/admin/users/${id}/delete`;
+  });
+</script>
+
+<!-- AI Chatbot Widget -->
+<%- include('ai-chatbot-widget') %>
+
+</body>
+</html>

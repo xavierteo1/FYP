@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Create OOTD | Clothes Swap</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Global Design System -->
+    <link href="/css/global-design.css" rel="stylesheet">
+
+    <style>
+
+        .navbar-brand {
+            font-weight: 700;
+            letter-spacing: .08em;
+            text-transform: uppercase;
+            font-size: 1rem;
+        }
+
+        .brand-red { color: #e60000; }
+
+        .page-header {
+            margin-top: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .page-title {
+            font-size: 1.4rem;
+            font-weight: 700;
+        }
+
+        .page-subtitle {
+            font-size: 0.9rem;
+            color: #6c757d;
+        }
+
+        .card-upload {
+            border-radius: 16px;
+            border: none;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.06);
+            background: #ffffff;
+        }
+
+        .form-label { 
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .form-control, .form-select {
+            border-radius: 10px;
+        }
+
+        .btn-primary-custom {
+            background-color: #e60000;
+            border-color: #e60000;
+            border-radius: 999px;
+            font-weight: 600;
+            padding: 0.55rem 1.5rem;
+            font-size: 0.95rem;
+        }
+        .btn-primary-custom:hover {
+            background-color: #cc0000;
+            border-color: #cc0000;
+        }
+
+        .alert-message {
+            border-radius: 10px;
+        }
+
+        .hint-text {
+            font-size: 0.8rem;
+            color: #6c757d;
+        }
+
+        .divider-text {
+            text-align: center;
+            margin: 1rem 0;
+            font-size: 0.8rem;
+            color: #6b7280;
+            position: relative;
+        }
+
+        .divider-text::before,
+        .divider-text::after {
+            content: "";
+            position: absolute;
+            top: 50%;
+            width: 40%;
+            height: 1px;
+            background-color: #e5e7eb;
+        }
+        .divider-text::before { left: 0; }
+        .divider-text::after { right: 0; }
+
+    /* Frutiger Metro Dynamic Background */
+    body {
+        background: linear-gradient(45deg, #E8F4F8, #F0E8F8, #F8F0E8, #E8F8F0, #F8F0F0, #E8F4F8);
+        background-size: 400% 400%;
+        animation: metro-flow 30s ease infinite;
+        position: relative;
+        min-height: 100vh;
+        overflow-x: hidden;
+        color: #333;
+    }
+    
+    body::before {
+        content: '';
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-image: 
+            linear-gradient(90deg, rgba(0, 120, 215, 0.12) 0%, transparent 30%, transparent 70%, rgba(0, 120, 215, 0.12) 100%),
+            linear-gradient(180deg, rgba(255, 140, 0, 0.08) 0%, transparent 40%, transparent 60%, rgba(255, 140, 0, 0.08) 100%),
+            linear-gradient(45deg, rgba(107, 142, 35, 0.1) 0%, transparent 50%, transparent 50%, rgba(107, 142, 35, 0.1) 100%);
+        animation: metro-grid 20s ease-in-out infinite;
+        pointer-events: none;
+        z-index: 0;
+    }
+
+    body::after {
+        content: '';
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-image: 
+            linear-gradient(90deg, transparent 0%, rgba(0, 120, 215, 0.05) 25%, rgba(0, 120, 215, 0.05) 75%, transparent 100%),
+            linear-gradient(0deg, transparent 0%, rgba(255, 140, 0, 0.04) 50%, transparent 100%);
+        background-size: 200% 100%, 100% 200%;
+        animation: metro-slide 25s ease-in-out infinite;
+        pointer-events: none;
+        z-index: 0;
+    }
+
+    @keyframes metro-flow {
+        0% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+        100% { background-position: 0% 50%; }
+    }
+
+    @keyframes metro-grid {
+        0%, 100% { transform: scale(1) translateY(0); filter: brightness(1); }
+        25% { transform: scale(1.02) translateY(-5px); filter: brightness(1.03); }
+        50% { transform: scale(1.01) translateY(-10px); filter: brightness(1.05); }
+        75% { transform: scale(1.02) translateY(-5px); filter: brightness(1.03); }
+    }
+
+    @keyframes metro-slide {
+        0%, 100% { background-position: 0% 0%, 0% 0%; }
+        50% { background-position: 100% 0%, 0% 100%; }
+    }
+
+    body > * {
+        position: relative;
+        z-index: 1;
+    }
+    </style>
+
+</head>
+<body>
+
+<!-- AI Chatbot Widget -->
+<%- include('ai-chatbot-widget') %>
+
+<!-- NAVBAR -->
+<nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
+    <div class="container">
+        <a class="navbar-brand" href="/">
+            <span class="brand-red">CLOTHES</span> SWAP
+        </a>
+
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#nav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="nav">
+            <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+                <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+
+                <% if (user) { %>
+                    <li class="nav-item"><a class="nav-link" href="/wardrobe">Wardrobe</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/swap">Swap</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/sahm">SwapMates</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/profile">Profile</a></li>
+                    <li class="nav-item ms-lg-3"><a class="btn btn-sm" style="background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%); color: white; border: none; border-radius: 10px; font-weight: 700; padding: 0.5rem 1.2rem; transition: all 0.3s ease; box-shadow: 0 4px 12px rgba(45, 90, 79, 0.2);" href="/logout" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 16px rgba(45, 90, 79, 0.3)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 12px rgba(45, 90, 79, 0.2)';">Logout</a></li>
+                <% } else { %>
+                    <li class="nav-item ms-lg-3"><a class="btn btn-sm btn-outline-danger" href="/login">Sign In</a></li>
+                <% } %>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div class="container py-4">
+
+    <!-- Header -->
+    <div class="page-header">
+        <div class="page-title">Create OOTD</div>
+        <div class="page-subtitle">Share your outfit of the day with everyone!</div>
+    </div>
+
+    <!-- Flash / validation errors -->
+    <% if (errors && errors.length > 0) { %>
+        <div class="alert alert-danger alert-message">
+            <ul class="mb-0">
+                <% errors.forEach(e => { %>
+                    <li><%= e.msg %></li>
+                <% }) %>
+            </ul>
+        </div>
+    <% } %>
+
+    <div class="card card-upload">
+        <div class="card-body p-4">
+
+            <!-- IMPORTANT: enctype for file upload -->
+            <form action="/create-ootd" method="POST" enctype="multipart/form-data">
+
+                <!-- FILE UPLOADS -->
+                <div class="mb-3">
+                    <label class="form-label">Upload Image 1 *</label>
+                    <input 
+                        type="file"
+                        class="form-control"
+                        name="image1"
+                        accept="image/*"
+                    >
+                    <div class="hint-text mt-1">Required. This will be the main OOTD image.</div>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Upload Image 2 (optional)</label>
+                    <input 
+                        type="file"
+                        class="form-control"
+                        name="image2"
+                        accept="image/*"
+                    >
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Upload Image 3 (optional)</label>
+                    <input 
+                        type="file"
+                        class="form-control"
+                        name="image3"
+                        accept="image/*"
+                    >
+                </div>
+
+                <!-- CAPTION -->
+                <div class="mb-3">
+                    <label class="form-label">Caption</label>
+                    <textarea
+                        class="form-control"
+                        name="caption"
+                        rows="3"
+                        placeholder="Write something about your outfit..."
+                    ><%= formData?.caption || '' %></textarea>
+                </div>
+
+                <!-- VISIBILITY -->
+                <div class="mb-3">
+                    <label class="form-label">Visibility</label>
+                    <select class="form-select" name="visibility">
+                        <option value="public" <%= !formData || formData.visibility === 'public' ? 'selected' : '' %>>
+                            Public (everyone can see)
+                        </option>
+                        <option value="private" <%= formData?.visibility === 'private' ? 'selected' : '' %>>
+                            Private (only you)
+                        </option>
+                    </select>
+                </div>
+
+                <!-- ACTION BUTTONS -->
+                <div class="d-flex justify-content-end mt-4">
+                    <a href="/" class="btn btn-outline-secondary me-2" style="border-radius:999px;">Cancel</a>
+                    <button type="submit" class="btn btn-primary-custom">Post OOTD</button>
+                </div>
+
+            </form>
+        </div>
+    </div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

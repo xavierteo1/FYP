@@ -1,0 +1,999 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>SwapMates Dashboard | Clothes Swap</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- Bootstrap -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Global Design System -->
+  <link href="/css/global-design.css" rel="stylesheet">
+
+  <style>
+
+    .navbar-brand {
+      font-weight: 900;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      font-size: 1.9rem;
+      background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      font-family: 'Archivo Black', sans-serif;
+      transition: font-size 0.3s ease;
+    }
+
+    .navbar {
+      position: sticky;
+      top: 0;
+      z-index: 1200;
+      background: rgba(221, 208, 196, 0.95) !important;
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(45, 90, 79, 0.1) !important;
+      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.08);
+      padding: 2rem 0 !important;
+      transition: all 0.3s ease;
+    }
+
+    .brand-red { color: var(--primary); }
+
+    .wrap{
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 18px 12px 60px;
+    }
+
+    .card-soft{
+      border-radius:18px;
+      border:none;
+      background:#fff;
+      box-shadow: 0 10px 25px rgba(15,23,42,0.08);
+    }
+
+    .section-title{
+      font-weight: 900;
+      letter-spacing: .02em;
+      margin: 0;
+    }
+
+    .subtle{
+      color: rgba(0,0,0,.55);
+      font-size: .9rem;
+    }
+
+    .btn-round{ border-radius: 999px; }
+    .form-text-mini{ font-size: .82rem; color: rgba(0,0,0,.55); }
+
+    .stat{
+      border-radius: 18px;
+      background: #fff;
+      border: 1px solid rgba(0,0,0,.06);
+      box-shadow: 0 10px 25px rgba(15,23,42,0.06);
+      padding: 14px 14px;
+    }
+    .stat-number{
+      font-size: 1.35rem;
+      font-weight: 900;
+      margin-bottom: 2px;
+    }
+    .stat-label{
+      font-size: .85rem;
+      color: rgba(0,0,0,.55);
+    }
+
+    .pill{
+      border-radius:999px;
+      padding:.2rem .6rem;
+      font-size:.78rem;
+      font-weight: 700;
+      display:inline-block;
+    }
+    .pill-pending{ background:#e0f2fe; color:#0369a1; }
+    .pill-accepted{ background:#fef9c3; color:#92400e; }
+    .pill-progress{ background:#ede9fe; color:#5b21b6; }
+    .pill-done{ background:#dcfce7; color:#166534; }
+
+    .table-sm td, .table-sm th{
+      padding-top: .55rem;
+      padding-bottom: .55rem;
+      vertical-align: middle;
+      font-size: .88rem;
+    }
+
+    .job-card{
+      border: 1px solid rgba(0,0,0,.06);
+      border-radius: 16px;
+      background: #fff;
+      padding: 14px;
+    }
+    .job-meta{ font-size: .86rem; color: rgba(0,0,0,.60); }
+    .job-title{ font-weight: 900; margin-bottom: 4px; }
+    .job-grid{
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+    }
+    @media (min-width: 992px){
+      .job-grid{ grid-template-columns: 1fr 1fr; }
+    }
+
+    .mini-img{
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      object-fit: cover;
+      border: 1px solid rgba(0,0,0,.08);
+      background:#f1f1f1;
+    }
+
+    .disabled-hint{
+      font-size:.85rem;
+      color: rgba(0,0,0,.55);
+      margin-top: 6px;
+    }
+
+    .accordion-button:focus{
+      box-shadow:none;
+      border-color: transparent;
+    }
+
+    .bg-soft{
+      background:#f8fafc;
+      border: 1px solid rgba(0,0,0,.08);
+    }
+
+    /* Frutiger Metro Dynamic Background */
+    body {
+        background: linear-gradient(45deg, #E8F4F8, #F0E8F8, #F8F0E8, #E8F8F0, #F8F0F0, #E8F4F8);
+        background-size: 400% 400%;
+        animation: metro-flow 30s ease infinite;
+        position: relative;
+        min-height: 100vh;
+        overflow-x: hidden;
+        color: #333;
+    }
+    
+    body::before {
+        content: '';
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-image: 
+            linear-gradient(90deg, rgba(0, 120, 215, 0.12) 0%, transparent 30%, transparent 70%, rgba(0, 120, 215, 0.12) 100%),
+            linear-gradient(180deg, rgba(255, 140, 0, 0.08) 0%, transparent 40%, transparent 60%, rgba(255, 140, 0, 0.08) 100%),
+            linear-gradient(45deg, rgba(107, 142, 35, 0.1) 0%, transparent 50%, transparent 50%, rgba(107, 142, 35, 0.1) 100%);
+        animation: metro-grid 20s ease-in-out infinite;
+        pointer-events: none;
+        z-index: 0;
+    }
+
+    body::after {
+        content: '';
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-image: 
+            linear-gradient(90deg, transparent 0%, rgba(0, 120, 215, 0.05) 25%, rgba(0, 120, 215, 0.05) 75%, transparent 100%),
+            linear-gradient(0deg, transparent 0%, rgba(255, 140, 0, 0.04) 50%, transparent 100%);
+        background-size: 200% 100%, 100% 200%;
+        animation: metro-slide 25s ease-in-out infinite;
+        pointer-events: none;
+        z-index: 0;
+    }
+
+    @keyframes metro-flow {
+        0% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+        100% { background-position: 0% 50%; }
+    }
+
+    @keyframes metro-grid {
+        0%, 100% { transform: scale(1) translateY(0); filter: brightness(1); }
+        25% { transform: scale(1.02) translateY(-5px); filter: brightness(1.03); }
+        50% { transform: scale(1.01) translateY(-10px); filter: brightness(1.05); }
+        75% { transform: scale(1.02) translateY(-5px); filter: brightness(1.03); }
+    }
+
+    @keyframes metro-slide {
+        0%, 100% { background-position: 0% 0%, 0% 0%; }
+        50% { background-position: 100% 0%, 0% 100%; }
+    }
+
+    body > * {
+        position: relative;
+        z-index: 1;
+    }
+  </style>
+</head>
+
+<body>
+
+<%
+  function fmtDT(dt){
+    if(!dt) return '';
+    try{ return dt.toLocaleString ? dt.toLocaleString() : String(dt); }
+    catch(e){ return String(dt); }
+  }
+
+  function fmtDate(dt){
+    if(!dt) return '';
+    try{
+      // If MySQL already returns "YYYY-MM-DD", keep it
+      if (typeof dt === 'string') return dt.slice(0,10);
+
+      // If it's a Date object (or something parsable), format using LOCAL date parts
+      const d = (dt instanceof Date) ? dt : new Date(dt);
+      if (Number.isNaN(d.getTime())) return String(dt).slice(0,10);
+
+      const yyyy = d.getFullYear();
+      const mm = String(d.getMonth() + 1).padStart(2, '0');
+      const dd = String(d.getDate()).padStart(2, '0');
+      return `${yyyy}-${mm}-${dd}`;
+    } catch(e){
+      return String(dt).slice(0,10);
+    }
+  }
+%>
+
+
+<!-- NAVBAR -->
+<nav class="navbar navbar-expand-lg navbar-light">
+  <div class="container-fluid px-4">
+    <a class="navbar-brand" href="/">Clothes <span class="brand-red">Swap</span></a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav ms-auto">
+
+        <li class="nav-item">
+          <a class="nav-link" href="/">Home</a>
+        </li>
+
+        <% if (user) { %>
+          <li class="nav-item"><a class="nav-link" href="/wardrobe">Wardrobe</a></li>
+          <li class="nav-item"><a class="nav-link" href="/swap">Swap</a></li>
+          <li class="nav-item"><a class="nav-link active" aria-current="page" href="/sahm">SwapMates</a></li>
+          <li class="nav-item"><a class="nav-link" href="/profile">Profile</a></li>
+          <li class="nav-item"><a class="nav-link" href="/logout">Logout</a></li>
+        <% } else { %>
+          <li class="nav-item"><a class="nav-link" href="/login">Sign In</a></li>
+        <% } %>
+
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<div class="wrap">
+
+  <!-- Flash messages -->
+  <div class="mt-3">
+    <% if (typeof success_msg !== 'undefined' && success_msg && success_msg.length > 0) { %>
+      <div class="alert alert-success" style="border-radius:12px;"><%= success_msg %></div>
+    <% } %>
+    <% if (typeof error_msg !== 'undefined' && error_msg && error_msg.length > 0) { %>
+      <div class="alert alert-danger" style="border-radius:12px;"><%= error_msg %></div>
+    <% } %>
+  </div>
+
+  <!-- Header -->
+  <div class="d-flex justify-content-between align-items-start flex-wrap gap-2 mt-2">
+    <div>
+      <h3 class="section-title">SwapMates Dashboard</h3>
+      <div class="subtle">Manage profile, availability, orders, earnings, payout — all in one page.</div>
+    </div>
+    <div class="text-end subtle">
+      Logged in as <b><%= user ? user.username : '' %></b>
+    </div>
+  </div>
+
+  <!-- Stats Row -->
+  <div class="row g-3 mt-2">
+    <div class="col-12 col-md-4">
+      <div class="stat">
+        <div class="stat-number">$<%= earnings && earnings.total_earned ? Number(earnings.total_earned).toFixed(2) : '0.00' %></div>
+        <div class="stat-label">Total earned (all time)</div>
+      </div>
+    </div>
+    <div class="col-12 col-md-4">
+      <div class="stat">
+        <div class="stat-number">$<%= earnings && earnings.pending_payout ? Number(earnings.pending_payout).toFixed(2) : '0.00' %></div>
+        <div class="stat-label">Pending payout (completed, not requested)</div>
+      </div>
+    </div>
+    <div class="col-12 col-md-4">
+      <div class="stat">
+        <div class="stat-number"><%= ongoingCount || 0 %></div>
+        <div class="stat-label">Ongoing jobs (accepted / on the way)</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SETTINGS -->
+  <div class="card-soft p-3 mt-3">
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+      <div>
+        <h5 class="mb-0 fw-bold">Settings</h5>
+        <div class="subtle">Update your profile, default location, and availability here.</div>
+      </div>
+    </div>
+
+    <div class="accordion mt-3" id="sahmSettingsAcc">
+
+      <!-- Profile -->
+      <div class="accordion-item" style="border:none; border-radius:14px; overflow:hidden;">
+        <h2 class="accordion-header" id="headingProfile">
+          <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseProfile" aria-expanded="true" aria-controls="collapseProfile">
+            <b>Profile settings</b> <span class="ms-2 subtle">(location, radius, description, PayPal)</span>
+          </button>
+        </h2>
+        <div id="collapseProfile" class="accordion-collapse collapse show" aria-labelledby="headingProfile" data-bs-parent="#sahmSettingsAcc">
+          <div class="accordion-body">
+
+            <!-- ✅ PROFILE FORM (ONLY THIS FORM) -->
+            <form action="/sahm/profile" method="POST">
+              <div class="row g-2">
+
+                <div class="col-12 col-lg-6">
+                  <label class="form-label fw-semibold">Default location</label>
+
+                  <select class="form-select" name="default_location_id" id="default_location_id">
+                    <option value="">-- Select location --</option>
+                    <% (locations || []).forEach(loc => { %>
+                      <option
+                        value="<%= loc.location_id %>"
+                        <%= (profile && profile.default_location_id && String(profile.default_location_id) === String(loc.location_id)) ? 'selected' : '' %>
+                      >
+                        <%= loc.label %>
+                      </option>
+                    <% }) %>
+                  </select>
+
+                  <div class="d-flex align-items-center justify-content-between mt-2">
+                    <div class="form-text-mini">
+                      Tip: set a default location so radius filtering works better.
+                    </div>
+
+                    <!-- ✅ type="button" so it doesn't submit /sahm/profile -->
+                    <button type="button" class="btn btn-sm btn-outline-secondary btn-round" id="toggleAddLoc">
+                      Can’t find your location?
+                    </button>
+                  </div>
+                </div>
+
+                <div class="col-12 col-lg-6">
+                  <label class="form-label fw-semibold">Service radius (km)</label>
+                  <input
+                    type="number"
+                    min="1"
+                    step="1"
+                    class="form-control"
+                    name="service_radius_km"
+                    value="<%= profile && profile.service_radius_km ? profile.service_radius_km : '' %>"
+                    placeholder="e.g. 8"
+                  />
+                  <div class="form-text-mini">Jobs outside this radius won’t show (based on default location lat/lng).</div>
+                </div>
+
+                <div class="col-12">
+                  <label class="form-label fw-semibold">Description (optional)</label>
+                  <textarea class="form-control" name="description" rows="3"
+                    placeholder="Short intro / notes (e.g. fast response, available evenings)"><%= profile && profile.description ? profile.description : '' %></textarea>
+                </div>
+
+                <!-- ✅ NEW: PAYPAL EMAIL -->
+                <div class="col-12 col-lg-6">
+                  <label class="form-label fw-semibold">PayPal email (for payout)</label>
+                  <input
+                    type="email"
+                    class="form-control"
+                    name="paypal_email"
+                    value="<%= profile && profile.paypal_email ? profile.paypal_email : '' %>"
+                    placeholder="e.g. sahm-buyer@personal.example.com"
+                  />
+                  <div class="form-text-mini">
+                    Use your <b>PayPal Sandbox</b> personal account email for testing payouts.
+                  </div>
+                </div>
+
+                <div class="col-12 d-flex justify-content-end">
+                  <button class="btn btn-danger btn-round px-4">Save profile</button>
+                </div>
+
+              </div>
+            </form>
+
+            <!-- ✅ ADD LOCATION BOX (OUTSIDE PROFILE FORM) -->
+            <div class="mt-3 d-none" id="addLocBox">
+              <div class="bg-soft rounded-4 p-3">
+                <div class="d-flex justify-content-between align-items-center">
+                  <div>
+                    <div class="fw-bold">Add a location</div>
+                      <div class="form-text-mini">
+                        This will appear in your dropdown (Admin can also see it). If you leave latitude/longitude blank,
+                        we will auto-fill it using OneMap (postal code works best).
+                      </div>
+                  </div>
+                  <button type="button" class="btn btn-sm btn-outline-secondary btn-round" id="closeAddLoc">X</button>
+                </div>
+                <form action="/sahm/locations/add" method="POST" class="row g-2 mt-2">
+                  <div class="col-12">
+                    <label class="form-label fw-semibold mb-1">Label *</label>
+                    <input class="form-control" name="label" required maxlength="120"
+                      placeholder="e.g. Woodlands MRT / Orchard Gateway">
+                  </div>
+
+                  <div class="col-12">
+                    <label class="form-label fw-semibold mb-1">Address line</label>
+                    <input class="form-control" name="address_line" maxlength="255" placeholder="Optional">
+                  </div>
+
+                  <div class="col-6">
+                    <label class="form-label fw-semibold mb-1">City</label>
+                    <input class="form-control" name="city" maxlength="120" placeholder="Singapore">
+                  </div>
+
+                  <div class="col-6">
+                    <label class="form-label fw-semibold mb-1">Postal code</label>
+                    <input class="form-control" name="postal_code" maxlength="20" placeholder="Optional">
+                  </div>
+
+                  <div class="col-6">
+                    <label class="form-label fw-semibold mb-1">Latitude</label>
+                    <input class="form-control" name="latitude" placeholder="Optional">
+                  </div>
+
+                  <div class="col-6">
+                    <label class="form-label fw-semibold mb-1">Longitude</label>
+                    <input class="form-control" name="longitude" placeholder="Optional">
+                  </div>
+
+                  <div class="col-12 d-flex justify-content-end gap-2 mt-2">
+                    <button class="btn btn-sm btn-danger btn-round px-4">Add</button>
+                  </div>
+                </form>
+
+                <!-- Delete only "Mine" locations -->
+                <div class="mt-3">
+                  <div class="fw-semibold" style="font-size:.9rem;">Your locations</div>
+                  <div class="form-text-mini mb-2">You can delete only locations you created.</div>
+
+                  <div class="table-responsive">
+                    <table class="table table-sm mb-0">
+                      <thead class="table-light">
+                        <tr>
+                          <th>Label</th>
+                          <th>Coords</th>
+                          <th class="text-end">Action</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <%
+                          const myLocs = (locations || []).filter(l => l.user_id && String(l.user_id) === String(user.user_id));
+                        %>
+
+                        <% if (myLocs.length > 0) { %>
+                          <% myLocs.forEach(loc => { %>
+                            <tr>
+                              <td><%= loc.label %></td>
+                              <td>
+                                <% const hasCoords = (loc.latitude != null && loc.longitude != null && String(loc.latitude) !== '' && String(loc.longitude) !== ''); %>
+                                <% if (hasCoords) { %>
+                                  <span class="pill pill-done">ok</span>
+                                <% } else { %>
+                                  <span class="pill pill-accepted">missing</span>
+                                <% } %>
+                              </td>
+                              <td class="text-end">
+                                <form action="/sahm/locations/<%= loc.location_id %>/delete" method="POST" class="d-inline"
+                                  onsubmit="return confirm('Delete this location?');">
+                                  <button class="btn btn-sm btn-outline-danger btn-round">Delete</button>
+                                </form>
+                              </td>
+                            </tr>
+                          <% }) %>
+                        <% } else { %>
+                          <tr>
+                            <td colspan="3" class="subtle">No custom locations yet.</td>
+                          </tr>
+                        <% } %>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <!-- Availability -->
+      <div class="accordion-item mt-2" style="border:none; border-radius:14px; overflow:hidden;">
+        <h2 class="accordion-header" id="headingAvail">
+          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseAvail" aria-expanded="false" aria-controls="collapseAvail">
+            <b>Availability</b> <span class="ms-2 subtle">(add / edit / remove)</span>
+          </button>
+        </h2>
+        <div id="collapseAvail" class="accordion-collapse collapse" aria-labelledby="headingAvail" data-bs-parent="#sahmSettingsAcc">
+          <div class="accordion-body">
+
+            <form action="/sahm/availability/add" method="POST">
+              <div class="row g-2">
+                <div class="col-12 col-md-5">
+                  <label class="form-label fw-semibold">Day of week</label>
+                  <select class="form-select" name="day_of_week">
+                    <option value="">-- Optional --</option>
+                    <option value="mon">mon</option>
+                    <option value="tue">tue</option>
+                    <option value="wed">wed</option>
+                    <option value="thu">thu</option>
+                    <option value="fri">fri</option>
+                    <option value="sat">sat</option>
+                    <option value="sun">sun</option>
+                  </select>
+                  <div class="form-text-mini">Pick day OR choose specific date below.</div>
+                </div>
+
+                <div class="col-12 col-md-7">
+                  <label class="form-label fw-semibold">Specific date</label>
+                  <input type="date" class="form-control" name="date_specific">
+                  <div class="form-text-mini">Use this if you’re only free on a specific date.</div>
+                </div>
+
+                <div class="col-6">
+                  <label class="form-label fw-semibold">Start time</label>
+                  <input type="time" class="form-control" name="start_time" required>
+                </div>
+
+                <div class="col-6">
+                  <label class="form-label fw-semibold">End time</label>
+                  <input type="time" class="form-control" name="end_time" required>
+                </div>
+
+                <div class="col-12 d-flex justify-content-end">
+                  <button class="btn btn-outline-danger btn-round px-4">Add availability</button>
+                </div>
+              </div>
+            </form>
+
+            <hr class="my-3">
+
+            <% if (availability && availability.length > 0) { %>
+              <div class="table-responsive">
+                <table class="table table-sm mb-0">
+                  <thead class="table-light">
+                    <tr>
+                      <th>Day</th>
+                      <th>Date</th>
+                      <th>Time</th>
+                      <th class="text-end">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <% availability.forEach(a => { %>
+                      <tr>
+                        <td><%= a.day_of_week || '—' %></td>
+                        <td><%= a.date_specific ? fmtDate(a.date_specific) : '—' %></td>
+                        <td><%= a.start_time %> - <%= a.end_time %></td>
+                        <td class="text-end">
+                          <button
+                            type="button"
+                            class="btn btn-sm btn-outline-secondary btn-round js-edit-avail"
+                            data-bs-toggle="modal"
+                            data-bs-target="#editAvailabilityModal"
+                            data-id="<%= a.availability_id %>"
+                            data-day="<%= a.day_of_week || '' %>"
+                            data-date="<%= a.date_specific ? fmtDate(a.date_specific) : '' %>"
+                            data-start="<%= a.start_time %>"
+                            data-end="<%= a.end_time %>"
+                          >
+                            Edit
+                          </button>
+
+                          <form action="/sahm/availability/<%= a.availability_id %>/delete" method="POST" class="d-inline">
+                            <button class="btn btn-sm btn-outline-danger btn-round">Remove</button>
+                          </form>
+                        </td>
+                      </tr>
+                    <% }) %>
+                  </tbody>
+                </table>
+              </div>
+            <% } else { %>
+              <div class="subtle">No availability set yet.</div>
+            <% } %>
+
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Available Jobs -->
+  <div class="card-soft p-3 mt-3">
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+      <div>
+        <h5 class="mb-0 fw-bold">Available orders</h5>
+        <div class="subtle">
+          We only show orders that match <b>your availability</b> and are within <b>your radius</b> from your default location.
+        </div>
+      </div>
+      <span class="subtle">Accepting an order assigns <b>both legs</b> to you.</span>
+    </div>
+
+    <% if (filters && (filters.needsAvailability || !filters.radiusReady)) { %>
+      <div class="alert alert-warning mt-3 mb-0" style="border-radius:14px;">
+        <div class="fw-bold mb-1">Set your filters to see orders</div>
+
+        <% if (filters.needsAvailability) { %>
+          <div class="mb-1">• You have <b>no availability</b> yet. Add at least one time slot.</div>
+        <% } %>
+
+        <% if (!filters.radiusReady) { %>
+          <div class="mb-0">
+            • You need a <b>default location</b> with latitude/longitude and a <b>service radius (km)</b>.
+            (Tip: if your location has no lat/lng, re-add it and leave lat/lng blank — we’ll auto-fill it via OneMap.)
+          </div>
+        <% } %>
+      </div>
+    <% } %>
+
+    <% if (filters && filters.missingPickupCoordsCount && filters.missingPickupCoordsCount > 0) { %>
+      <div class="alert alert-info mt-3 mb-0" style="border-radius:14px;">
+        Some orders were hidden because their pickup location has no lat/lng (<%= filters.missingPickupCoordsCount %>).
+      </div>
+    <% } %>
+
+    <div class="job-grid mt-3">
+      <% if (availableJobs && availableJobs.length > 0) { %>
+        <% availableJobs.forEach(job => { %>
+          <div class="job-card">
+            <div class="d-flex justify-content-between align-items-start">
+              <div>
+                <div class="job-title">
+                  Order #<%= job.match_id %>
+                  <span class="subtle">· Ref <%= job.request_id %></span>
+                  <% if (job.distance_km != null) { %>
+                    <span class="subtle">· <%= Number(job.distance_km).toFixed(1) %> km</span>
+                  <% } %>
+                </div>
+
+                <div class="job-meta">
+                  Pickup: <b><%= job.pickup_label %></b><br/>
+                  Dropoff: <b><%= job.drop_label %></b>
+                  <% if (job.scheduled_time) { %>
+                    <div>Scheduled: <b><%= fmtDT(job.scheduled_time) %></b></div>
+                  <% } %>
+                </div>
+              </div>
+
+              <div class="text-end">
+                <div class="pill pill-pending">pending</div>
+                <div class="mt-2">
+                  <div class="subtle">Total earning</div>
+                  <div style="font-weight:900;">
+                    $<%= job.total_sahm_earning != null ? Number(job.total_sahm_earning).toFixed(2) : (job.sahm_earning != null ? Number(job.sahm_earning).toFixed(2) : '0.00') %>
+                  </div>
+                  <div class="subtle mt-1" style="font-size:.85rem;">
+                    Total fee: $<%= job.total_delivery_fee != null ? Number(job.total_delivery_fee).toFixed(2) : (job.delivery_fee != null ? Number(job.delivery_fee).toFixed(2) : '0.00') %>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <hr class="my-2">
+
+            <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+              <div class="d-flex align-items-center gap-2">
+                <img class="mini-img" src="<%= job.item1_image || '/images/placeholder.png' %>" onerror="this.src='/images/placeholder.png';" />
+                <div class="subtle">
+                  <b><%= job.user1_username %></b> item<br/>
+                  <span class="text-dark"><%= job.item1_title %></span>
+                </div>
+              </div>
+
+              <div class="d-flex align-items-center gap-2">
+                <img class="mini-img" src="<%= job.item2_image || '/images/placeholder.png' %>" onerror="this.src='/images/placeholder.png';" />
+                <div class="subtle">
+                  <b><%= job.user2_username %></b> item<br/>
+                  <span class="text-dark"><%= job.item2_title %></span>
+                </div>
+              </div>
+            </div>
+
+            <div class="mt-3 d-flex justify-content-end">
+              <form action="/sahm/jobs/<%= job.request_id %>/accept" method="POST">
+                <button class="btn btn-danger btn-round px-4">Accept order</button>
+              </form>
+            </div>
+          </div>
+        <% }) %>
+      <% } else { %>
+        <div class="subtle">No matching orders at the moment.</div>
+      <% } %>
+    </div>
+  </div>
+
+  <!-- Active Jobs -->
+  <div class="card-soft p-3 mt-3">
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+      <div>
+        <h5 class="mb-0 fw-bold">Active jobs</h5>
+        <div class="subtle">Update status without leaving this page.</div>
+      </div>
+    </div>
+    <% if (activeJobs && activeJobs.length > 0) { %>
+      <div class="table-responsive mt-3">
+        <table class="table table-sm mb-0">
+          <thead class="table-light">
+            <tr>
+              <th>Job</th>
+              <th>Pickup</th>
+              <th>Dropoff</th>
+              <th>Status</th>
+              <th>Earning</th>
+              <th class="text-end">Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% activeJobs.forEach(j => { %>
+              <tr>
+                <td>#<%= j.request_id %></td>
+                <td><%= j.pickup_label %></td>
+                <td><%= j.drop_label %></td>
+                <td>
+                  <% if (j.status === 'accepted') { %>
+                    <span class="pill pill-accepted">accepted</span>
+                  <% } else if (j.status === 'in_progress') { %>
+                    <span class="pill pill-progress">on the way</span>
+                  <% } else { %>
+                    <span class="pill pill-pending"><%= j.status %></span>
+                  <% } %>
+                </td>
+                <td>$<%= j.sahm_earning != null ? Number(j.sahm_earning).toFixed(2) : '0.00' %></td>
+                <td class="text-end">
+                  <% if (j.status === 'accepted') { %>
+                    <form action="/sahm/jobs/<%= j.request_id %>/pickup" method="POST" class="d-inline">
+                      <button class="btn btn-outline-danger btn-sm btn-round">Pickup</button>
+                    </form>
+                  <% } else if (j.status === 'in_progress') { %>
+                    <form action="/sahm/jobs/<%= j.request_id %>/delivered" method="POST" class="d-inline">
+                      <button class="btn btn-danger btn-sm btn-round">Delivered</button>
+                    </form>
+                  <% } %>
+                </td>
+              </tr>
+            <% }) %>
+          </tbody>
+        </table>
+      </div>
+    <% } else { %>
+      <div class="subtle mt-3">No active jobs right now.</div>
+    <% } %>
+  </div>
+
+  <!-- Completed Jobs + Payout -->
+  <div class="card-soft p-3 mt-3">
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+      <div>
+        <h5 class="mb-0 fw-bold">Completed jobs & payout</h5>
+        <div class="subtle">Request payout only when you have no ongoing jobs.</div>
+      </div>
+
+      <div class="text-end">
+        <form action="/sahm/payout/request" method="POST" class="d-inline">
+          <%
+            const pendingPayout = earnings && earnings.pending_payout ? Number(earnings.pending_payout) : 0;
+            const hasPaypal = !!(profile && profile.paypal_email && String(profile.paypal_email).trim() !== '');
+            const canRequest = (Number(ongoingCount || 0) === 0) && pendingPayout > 0 && hasPaypal;
+          %>
+
+          <button class="btn btn-danger btn-round px-4" <%= canRequest ? '' : 'disabled' %>>
+            Request payout
+          </button>
+
+          <% if (!canRequest) { %>
+            <div class="disabled-hint">
+              <% if (!hasPaypal) { %>
+                Set your PayPal email in <b>Profile settings</b> before requesting payout.
+              <% } else if (Number(ongoingCount || 0) > 0) { %>
+                You can’t request payout while you have ongoing jobs.
+              <% } else { %>
+                No pending earnings to request.
+              <% } %>
+            </div>
+          <% } %>
+        </form>
+      </div>
+    </div>
+
+    <% if (completedJobs && completedJobs.length > 0) { %>
+      <div class="table-responsive mt-3">
+        <table class="table table-sm mb-0">
+          <thead class="table-light">
+            <tr>
+              <th>Job</th>
+              <th>Pickup</th>
+              <th>Dropoff</th>
+              <th>Status</th>
+              <th>Earning</th>
+              <th>Paid?</th>
+              <th>Payout ID</th>
+              <th class="text-end">Updated</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% completedJobs.forEach(j => { %>
+              <tr>
+                <td>#<%= j.request_id %></td>
+                <td><%= j.pickup_label %></td>
+                <td><%= j.drop_label %></td>
+                <td><span class="pill pill-done">completed</span></td>
+                <td>$<%= j.sahm_earning != null ? Number(j.sahm_earning).toFixed(2) : '0.00' %></td>
+                <td><%= (String(j.is_earning_paid) === '1' || j.is_earning_paid === 1) ? 'Yes' : 'No' %></td>
+                <td><%= j.payout_id ? ('#' + j.payout_id) : '—' %></td>
+                <td class="text-end"><%= fmtDT(j.updated_at) %></td>
+              </tr>
+            <% }) %>
+          </tbody>
+        </table>
+      </div>
+    <% } else { %>
+      <div class="subtle mt-3">No completed jobs yet.</div>
+    <% } %>
+  </div>
+
+  <!-- Payout History -->
+  <div class="card-soft p-3 mt-3">
+    <div class="d-flex justify-content-between align-items-center">
+      <h5 class="mb-0 fw-bold">Payout requests history</h5>
+      <div class="subtle">Your past payout submissions.</div>
+    </div>
+
+    <% if (payoutRequests && payoutRequests.length > 0) { %>
+      <div class="table-responsive mt-3">
+        <table class="table table-sm mb-0">
+          <thead class="table-light">
+            <tr>
+              <th>Payout</th>
+              <th>Amount</th>
+              <th>Status</th>
+              <th class="text-end">Created</th>
+              <th class="text-end">Processed</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% payoutRequests.forEach(p => { %>
+              <tr>
+                <td>#<%= p.payout_id %></td>
+                <td>$<%= p.total_amount != null ? Number(p.total_amount).toFixed(2) : '0.00' %></td>
+                <td><%= p.status %></td>
+                <td class="text-end"><%= fmtDT(p.created_at) %></td>
+                <td class="text-end"><%= p.processed_at ? fmtDT(p.processed_at) : '—' %></td>
+              </tr>
+            <% }) %>
+          </tbody>
+        </table>
+      </div>
+    <% } else { %>
+      <div class="subtle mt-3">No payout requests yet.</div>
+    <% } %>
+  </div>
+
+</div>
+
+<!-- Edit Availability Modal -->
+<div class="modal fade" id="editAvailabilityModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content" style="border-radius:16px;">
+      <div class="modal-header">
+        <h5 class="modal-title fw-bold">Edit availability</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+
+      <form id="editAvailabilityForm" action="#" method="POST">
+        <div class="modal-body">
+          <div class="row g-2">
+            <div class="col-12">
+              <label class="form-label fw-semibold">Day of week</label>
+              <select class="form-select" name="day_of_week" id="edit_day">
+                <option value="">-- Optional --</option>
+                <option value="mon">mon</option>
+                <option value="tue">tue</option>
+                <option value="wed">wed</option>
+                <option value="thu">thu</option>
+                <option value="fri">fri</option>
+                <option value="sat">sat</option>
+                <option value="sun">sun</option>
+              </select>
+              <div class="form-text-mini">Pick day OR set specific date below.</div>
+            </div>
+
+            <div class="col-12">
+              <label class="form-label fw-semibold">Specific date</label>
+              <input type="date" class="form-control" name="date_specific" id="edit_date">
+            </div>
+
+            <div class="col-6">
+              <label class="form-label fw-semibold">Start time</label>
+              <input type="time" class="form-control" name="start_time" id="edit_start" required>
+            </div>
+
+            <div class="col-6">
+              <label class="form-label fw-semibold">End time</label>
+              <input type="time" class="form-control" name="end_time" id="edit_end" required>
+            </div>
+
+            <div class="form-text-mini mt-2">
+              Saving keeps you on this page and redirects back to /sahm.
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline-secondary btn-round" data-bs-dismiss="modal">Cancel</button>
+          <button class="btn btn-danger btn-round px-4">Save changes</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+(function(){
+  // Edit availability modal fill + action
+  const editBtns = document.querySelectorAll('.js-edit-avail');
+  const form = document.getElementById('editAvailabilityForm');
+
+  const dayEl = document.getElementById('edit_day');
+  const dateEl = document.getElementById('edit_date');
+  const startEl = document.getElementById('edit_start');
+  const endEl = document.getElementById('edit_end');
+
+  editBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const id = btn.dataset.id;
+      form.action = `/sahm/availability/${id}/update`;
+
+      dayEl.value = btn.dataset.day || '';
+      dateEl.value = btn.dataset.date || '';
+      startEl.value = btn.dataset.start || '';
+      endEl.value = btn.dataset.end || '';
+    });
+  });
+
+  // Toggle inline add location box
+  const toggleBtn = document.getElementById('toggleAddLoc');
+  const box = document.getElementById('addLocBox');
+  const closeBtn = document.getElementById('closeAddLoc');
+
+  if (toggleBtn && box) {
+    toggleBtn.addEventListener('click', () => {
+      box.classList.toggle('d-none');
+    });
+  }
+  if (closeBtn && box) {
+    closeBtn.addEventListener('click', () => {
+      box.classList.add('d-none');
+    });
+  }
+})();
+</script>
+
+<!-- AI Chatbot Widget -->
+<%- include('ai-chatbot-widget') %>
+
+</body>
+</html>

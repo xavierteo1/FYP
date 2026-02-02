@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Admin | Edit User</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Global Design System -->
+  <link href="/css/global-design.css" rel="stylesheet">
+
+  <style>
+    .cardx { border-radius: 20px; border: none; box-shadow: 0 8px 32px rgba(45, 90, 79, 0.1); }
+
+    /* Frutiger Metro Dynamic Background */
+    body {
+        background: linear-gradient(45deg, #E8F4F8, #F0E8F8, #F8F0E8, #E8F8F0, #F8F0F0, #E8F4F8);
+        background-size: 400% 400%;
+        animation: metro-flow 30s ease infinite;
+        position: relative;
+        min-height: 100vh;
+        overflow-x: hidden;
+        color: #333;
+    }
+    
+    body::before {
+        content: '';
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-image: 
+            linear-gradient(90deg, rgba(0, 120, 215, 0.12) 0%, transparent 30%, transparent 70%, rgba(0, 120, 215, 0.12) 100%),
+            linear-gradient(180deg, rgba(255, 140, 0, 0.08) 0%, transparent 40%, transparent 60%, rgba(255, 140, 0, 0.08) 100%),
+            linear-gradient(45deg, rgba(107, 142, 35, 0.1) 0%, transparent 50%, transparent 50%, rgba(107, 142, 35, 0.1) 100%);
+        animation: metro-grid 20s ease-in-out infinite;
+        pointer-events: none;
+        z-index: 0;
+    }
+
+    body::after {
+        content: '';
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-image: 
+            linear-gradient(90deg, transparent 0%, rgba(0, 120, 215, 0.05) 25%, rgba(0, 120, 215, 0.05) 75%, transparent 100%),
+            linear-gradient(0deg, transparent 0%, rgba(255, 140, 0, 0.04) 50%, transparent 100%);
+        background-size: 200% 100%, 100% 200%;
+        animation: metro-slide 25s ease-in-out infinite;
+        pointer-events: none;
+        z-index: 0;
+    }
+
+    @keyframes metro-flow {
+        0% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+        100% { background-position: 0% 50%; }
+    }
+
+    @keyframes metro-grid {
+        0%, 100% { transform: scale(1) translateY(0); filter: brightness(1); }
+        25% { transform: scale(1.02) translateY(-5px); filter: brightness(1.03); }
+        50% { transform: scale(1.01) translateY(-10px); filter: brightness(1.05); }
+        75% { transform: scale(1.02) translateY(-5px); filter: brightness(1.03); }
+    }
+
+    @keyframes metro-slide {
+        0%, 100% { background-position: 0% 0%, 0% 0%; }
+        50% { background-position: 100% 0%, 0% 100%; }
+    }
+
+    body > * {
+        position: relative;
+        z-index: 1;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container py-4">
+
+  <% if (typeof success_msg !== 'undefined' && success_msg && success_msg.length > 0) { %>
+    <div class="alert alert-success" style="border-radius:12px;"><%= success_msg %></div>
+  <% } %>
+  <% if (typeof error_msg !== 'undefined' && error_msg && error_msg.length > 0) { %>
+    <div class="alert alert-danger" style="border-radius:12px;"><%= error_msg %></div>
+  <% } %>
+
+  <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
+    <div>
+      <h4 class="mb-0">Edit User</h4>
+      <div class="text-muted" style="font-size:0.9rem;">
+        ID: <%= editUser.user_id %> • Created: <%= editUser.created_at && editUser.created_at.toLocaleString ? editUser.created_at.toLocaleString() : (editUser.created_at || '-') %>
+      </div>
+    </div>
+    <a href="/admin/users" class="btn btn-outline-secondary" style="border-radius:999px;">Back</a>
+  </div>
+
+  <div class="cardx bg-white p-4">
+    <form action="/admin/users/<%= editUser.user_id %>/edit" method="POST">
+      <div class="row g-3">
+        <div class="col-md-6">
+          <label class="form-label">Full Name</label>
+          <input class="form-control" name="full_name" value="<%= editUser.full_name || '' %>">
+        </div>
+
+        <div class="col-md-6">
+          <label class="form-label">Username</label>
+          <input class="form-control" name="username" value="<%= editUser.username || '' %>" required>
+        </div>
+
+        <div class="col-md-6">
+          <label class="form-label">Email</label>
+          <input type="email" class="form-control" name="email" value="<%= editUser.email || '' %>" required>
+        </div>
+
+        <div class="col-md-6">
+          <label class="form-label">Gender</label>
+          <select class="form-select" name="gender">
+            <option value="" <%= !editUser.gender ? 'selected' : '' %> >--</option>
+            <option value="male" <%= editUser.gender === 'male' ? 'selected' : '' %>>male</option>
+            <option value="female" <%= editUser.gender === 'female' ? 'selected' : '' %>>female</option>
+            <option value="other" <%= editUser.gender === 'other' ? 'selected' : '' %>>other</option>
+          </select>
+        </div>
+
+        <div class="col-12">
+          <label class="form-label">Bio</label>
+          <textarea class="form-control" name="bio" rows="3"><%= editUser.bio || '' %></textarea>
+        </div>
+
+        <div class="col-12">
+          <label class="form-label">Profile Image URL</label>
+          <input class="form-control" name="profile_image_url" value="<%= editUser.profile_image_url || '' %>">
+        </div>
+
+        <div class="col-md-6">
+          <label class="form-label">Role</label>
+          <select class="form-select" name="role">
+            <option value="user" <%= editUser.role === 'user' ? 'selected' : '' %>>user</option>
+            <option value="admin" <%= editUser.role === 'admin' ? 'selected' : '' %>>admin</option>
+          </select>
+        </div>
+
+        <div class="col-md-6">
+          <label class="form-label">Email Verified</label>
+          <select class="form-select" name="is_email_verified">
+            <option value="0" <%= editUser.is_email_verified === 0 ? 'selected' : '' %>>No</option>
+            <option value="1" <%= editUser.is_email_verified === 1 ? 'selected' : '' %>>Yes</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="mt-4 d-flex justify-content-end gap-2">
+        <a href="/admin/users" class="btn btn-outline-secondary" style="border-radius:999px;">Cancel</a>
+        <button class="btn btn-danger" style="border-radius:999px;">Save Changes</button>
+      </div>
+    </form>
+  </div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+<!-- AI Chatbot Widget -->
+<%- include('ai-chatbot-widget') %>
+
+</body>
+</html>

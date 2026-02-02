@@ -1,0 +1,840 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title><%= profileUser.username %> | Profile</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Global Design System -->
+    <link href="/css/global-design.css" rel="stylesheet">
+
+    <style>
+        .brand-red {
+            color: var(--primary);
+        }
+
+        /* PROFILE HEADER */
+        .profile-header {
+            margin-top: 2rem;
+            margin-bottom: 2rem;
+            border-radius: 20px;
+            padding: 2rem;
+            background: linear-gradient(135deg, rgba(45, 90, 79, 0.08) 0%, rgba(74, 124, 107, 0.08) 100%);
+            border: 1px solid rgba(45, 90, 79, 0.15);
+            box-shadow: 0 8px 32px rgba(45, 90, 79, 0.08);
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        .profile-photo {
+            width: 120px;
+            height: 120px;
+            border-radius: 999px;
+            object-fit: cover;
+            border: 4px solid var(--primary);
+            background-color: #fff;
+            flex-shrink: 0;
+            box-shadow: 0 8px 24px rgba(45, 90, 79, 0.25);
+        }
+
+        .profile-initial {
+            width: 120px;
+            height: 120px;
+            border-radius: 999px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            font-weight: 900;
+            border: 4px solid white;
+            flex-shrink: 0;
+            box-shadow: 0 8px 24px rgba(45, 90, 79, 0.25);
+        }
+
+        .profile-main {
+            flex: 1;
+        }
+
+        .profile-username {
+            font-size: 1.8rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin: 0;
+        }
+
+        .profile-meta {
+            font-size: 0.85rem;
+            color: #6b7280;
+            margin-top: 0.5rem;
+        }
+
+        .profile-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            border-radius: 999px;
+            padding: 0.3rem 0.85rem;
+            font-size: 0.75rem;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+            color: white;
+            font-weight: 700;
+            box-shadow: 0 4px 12px rgba(45, 90, 79, 0.2);
+        }
+
+        .profile-pill-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 999px;
+            background-color: #22c55e;
+            box-shadow: 0 0 6px rgba(34, 197, 94, 0.5);
+        }
+
+        /* TABS */
+        .nav-tabs {
+            border-bottom: 1px solid rgba(45, 90, 79, 0.1);
+        }
+
+        .nav-tabs .nav-link {
+            border-radius: 12px 12px 0 0;
+            border: none;
+            font-weight: 600;
+            color: #6b7280;
+            padding: 0.6rem 1.5rem;
+            font-size: 0.9rem;
+            transition: all 0.2s ease;
+        }
+
+        .nav-tabs .nav-link.active {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+            color: white;
+            box-shadow: 0 4px 12px rgba(45, 90, 79, 0.2);
+            border-bottom: none;
+        }
+
+        .nav-tabs .nav-link:hover:not(.active) {
+            background: rgba(45, 90, 79, 0.05);
+            color: var(--primary);
+        }
+
+        /* ITEM CARD – match wardrobe */
+        .item-card {
+            border-radius: 18px;
+            border: 1px solid rgba(45, 90, 79, 0.1);
+            overflow: hidden;
+            background: white;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 8px 24px rgba(45, 90, 79, 0.08);
+        }
+
+        .item-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 20px 40px rgba(45, 90, 79, 0.15);
+            border-color: rgba(45, 90, 79, 0.25);
+        }
+
+        .item-image-wrapper {
+            background: linear-gradient(135deg, #f9fafb 0%, #f3f4f6 100%);
+        }
+
+        .item-image {
+            width: 100%;
+            max-height: 320px;
+            height: auto;
+            object-fit: contain;
+        }
+
+        .item-body {
+            padding: 1rem;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .item-title {
+            font-size: 1rem;
+            font-weight: 800;
+            color: var(--secondary);
+            line-height: 1.3;
+        }
+
+        .item-brand {
+            font-size: 0.8rem;
+            color: #6c757d;
+            font-weight: 500;
+        }
+
+        .chip-row {
+            margin-top: 0.6rem;
+            display: flex;
+            gap: 0.35rem;
+            flex-wrap: wrap;
+        }
+
+        .chip {
+            border-radius: 999px;
+            padding: 0.2rem 0.65rem;
+            font-size: 0.7rem;
+            background-color: #f3f4f6;
+            color: #4b5563;
+            border: 1px solid #e5e7eb;
+            font-weight: 600;
+        }
+
+        .chip--category {
+            background: linear-gradient(135deg, #eef2ff 0%, #f5f3ff 100%);
+            border-color: #d8cfff;
+            color: #4338ca;
+            font-weight: 700;
+        }
+
+        .chip--size {
+            background: linear-gradient(135deg, #fef3c7 0%, #fed7aa 100%);
+            border-color: #fcd34d;
+            color: #92400e;
+            font-weight: 700;
+        }
+
+        .item-description {
+            margin-top: 0.6rem;
+            font-size: 0.8rem;
+            color: #4b5563;
+            line-height: 1.4;
+            flex: 1;
+        }
+
+        .item-meta {
+            margin-top: 0.6rem;
+            font-size: 0.78rem;
+            color: #6b7280;
+            font-weight: 500;
+        }
+
+        .item-footer {
+            padding: 0.75rem 1rem;
+            border-top: 1px solid rgba(45, 90, 79, 0.1);
+            background: linear-gradient(90deg, rgba(248,250,252,0.5), rgba(248,250,252,0.5));
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.78rem;
+            margin-top: auto;
+        }
+
+        .badge-swap {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+            color: #fff;
+            border-radius: 999px;
+            font-size: 0.7rem;
+            padding: 0.25rem 0.7rem;
+            font-weight: 700;
+            box-shadow: 0 4px 12px rgba(45, 90, 79, 0.2);
+        }
+
+        .badge-public {
+            background: linear-gradient(135deg, #d1e7dd 0%, #c3e6cb 100%);
+            color: #0f5132;
+            border-radius: 999px;
+            padding: 0.25rem 0.7rem;
+            font-size: 0.7rem;
+            font-weight: 700;
+            border: 1px solid #badbcc;
+        }
+
+        .status-pill {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            background: linear-gradient(135deg, rgba(45, 90, 79, 0.9) 0%, rgba(26, 26, 26, 0.9) 100%);
+            color: #f9fafb;
+            border-radius: 999px;
+            padding: 0.3rem 0.7rem;
+            font-size: 0.7rem;
+            display: flex;
+            align-items: center;
+            gap: 0.35rem;
+            font-weight: 700;
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .status-dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 999px;
+            background-color: #22c55e;
+            box-shadow: 0 0 8px rgba(34, 197, 94, 0.6);
+        }
+
+        .status-dot.personal {
+            background-color: #f97316;
+            box-shadow: 0 0 8px rgba(249, 115, 22, 0.6);
+        }
+
+        /* OOTD posts */
+        .ootd-card {
+            border-radius: 16px;
+            border: 1px solid rgba(45, 90, 79, 0.1);
+            box-shadow: 0 8px 24px rgba(45, 90, 79, 0.08);
+            overflow: hidden;
+            background-color: white;
+            cursor: pointer;
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .ootd-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 16px 40px rgba(45, 90, 79, 0.15);
+            border-color: rgba(45, 90, 79, 0.2);
+        }
+
+        .ootd-image-wrapper {
+            background: linear-gradient(135deg, #f9fafb 0%, #f3f4f6 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+        }
+
+        .ootd-image {
+            width: 100%;
+            max-height: 320px;
+            height: auto;
+            object-fit: contain;
+        }
+
+        .ootd-caption {
+            font-size: 0.9rem;
+            color: #374151;
+            cursor: pointer;
+            transition: color 0.2s ease;
+            font-weight: 500;
+            line-height: 1.5;
+        }
+
+        .ootd-caption:hover {
+            color: var(--accent);
+        }
+
+        .ootd-stats {
+            padding: 0.85rem 1rem;
+            border-top: 1px solid rgba(45, 90, 79, 0.1);
+            display: flex;
+            gap: 1.5rem;
+            font-size: 0.85rem;
+            color: #6b7280;
+            flex-wrap: wrap;
+        }
+
+        .ootd-stat-item {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            font-weight: 600;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: #6c757d;
+        }
+
+        .empty-state h5 {
+            font-weight: 600;
+        }
+
+    /* Frutiger Metro Dynamic Background */
+    body {
+        background: linear-gradient(45deg, #E8F4F8, #F0E8F8, #F8F0E8, #E8F8F0, #F8F0F0, #E8F4F8);
+        background-size: 400% 400%;
+        animation: metro-flow 30s ease infinite;
+        position: relative;
+        min-height: 100vh;
+        overflow-x: hidden;
+        color: #333;
+    }
+    
+    body::before {
+        content: '';
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-image: 
+            linear-gradient(90deg, rgba(0, 120, 215, 0.12) 0%, transparent 30%, transparent 70%, rgba(0, 120, 215, 0.12) 100%),
+            linear-gradient(180deg, rgba(255, 140, 0, 0.08) 0%, transparent 40%, transparent 60%, rgba(255, 140, 0, 0.08) 100%),
+            linear-gradient(45deg, rgba(107, 142, 35, 0.1) 0%, transparent 50%, transparent 50%, rgba(107, 142, 35, 0.1) 100%);
+        animation: metro-grid 20s ease-in-out infinite;
+        pointer-events: none;
+        z-index: 0;
+    }
+
+    body::after {
+        content: '';
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-image: 
+            linear-gradient(90deg, transparent 0%, rgba(0, 120, 215, 0.05) 25%, rgba(0, 120, 215, 0.05) 75%, transparent 100%),
+            linear-gradient(0deg, transparent 0%, rgba(255, 140, 0, 0.04) 50%, transparent 100%);
+        background-size: 200% 100%, 100% 200%;
+        animation: metro-slide 25s ease-in-out infinite;
+        pointer-events: none;
+        z-index: 0;
+    }
+
+    @keyframes metro-flow {
+        0% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+        100% { background-position: 0% 50%; }
+    }
+
+    @keyframes metro-grid {
+        0%, 100% { transform: scale(1) translateY(0); filter: brightness(1); }
+        25% { transform: scale(1.02) translateY(-5px); filter: brightness(1.03); }
+        50% { transform: scale(1.01) translateY(-10px); filter: brightness(1.05); }
+        75% { transform: scale(1.02) translateY(-5px); filter: brightness(1.03); }
+    }
+
+    @keyframes metro-slide {
+        0%, 100% { background-position: 0% 0%, 0% 0%; }
+        50% { background-position: 100% 0%, 0% 100%; }
+    }
+
+    body > * {
+        position: relative;
+        z-index: 1;
+    }
+    </style>
+</head>
+
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar navbar-expand-lg navbar-light">
+    <div class="container-fluid px-4">
+        <a class="navbar-brand" href="/">Clothes <span class="brand-red">Swap</span></a>
+
+        <button class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#mainNavbar">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div id="mainNavbar" class="collapse navbar-collapse">
+            <ul class="navbar-nav ms-auto mb-2 mb-lg-0" style="display: flex; align-items: center; gap: 0.8rem;">
+
+                <li class="nav-item">
+                    <a class="nav-link" aria-current="page" href="/">Home</a>
+                </li>
+
+                <% if (user) { %>
+                    <li class="nav-item"><a class="nav-link" href="/inbox">Inbox</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/wardrobe">Wardrobe</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/swap">Swap</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/sahm">SwapMates</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/profile">Profile</a></li>
+                <% } %>
+
+                <% if (user) { %>
+                    <li class="nav-item ms-lg-2">
+                        <a href="/logout" class="btn btn-sm" style="background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%); color: white; border: none; border-radius: 10px; font-weight: 700; padding: 0.7rem 1.6rem; transition: all 0.3s ease; box-shadow: 0 4px 12px rgba(45, 90, 79, 0.2); font-size: 0.95rem; font-family: 'Cinzel', serif; letter-spacing: 0.08em; text-transform: uppercase; display: flex; align-items: center;" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 16px rgba(45, 90, 79, 0.3)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 12px rgba(45, 90, 79, 0.2)';">Logout</a>
+                    </li>
+                <% } else { %>
+                    <li class="nav-item ms-lg-2">
+                        <a href="/login" class="btn btn-sm" style="background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%); color: white; border: none; border-radius: 10px; font-weight: 700; padding: 0.7rem 1.6rem; transition: all 0.3s ease; box-shadow: 0 4px 12px rgba(45, 90, 79, 0.2); font-size: 0.95rem; font-family: 'Cinzel', serif; letter-spacing: 0.08em; text-transform: uppercase; display: flex; align-items: center;" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 16px rgba(45, 90, 79, 0.3)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 12px rgba(45, 90, 79, 0.2)';">Sign In</a>
+                    </li>
+                <% } %>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<!-- PROFILE HEADER -->
+<div class="container">
+    <div class="profile-header">
+        <% if (profileUser.profile_image_url) { %>
+            <img src="<%= profileUser.profile_image_url %>" alt="Profile" class="profile-photo">
+        <% } else { %>
+            <div class="profile-initial">
+                <%= profileUser.username ? profileUser.username.charAt(0).toUpperCase() : '?' %>
+            </div>
+        <% } %>
+
+        <div class="profile-main">
+            <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+                <div>
+                    <div class="profile-username"><%= profileUser.username %></div>
+                    <div class="profile-meta">
+                        <% if (profileUser.gender) { %>
+                            <span>Gender: <%= profileUser.gender %></span>
+                        <% } %>
+                    </div>
+                </div>
+
+                <div>
+                    <span class="profile-pill">
+                        <span class="profile-pill-dot"></span>
+                        Public wardrobe
+                    </span>
+                    <% if (isSelf) { %>
+                        <span class="ms-2 text-muted" style="font-size:0.8rem;">(This is how others see you)</span>
+                    <% } %>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- TABS -->
+<div class="container">
+    <ul class="nav nav-tabs mb-3" id="profileTabs">
+        <li class="nav-item">
+            <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#publicWardrobe" type="button">
+                Public Wardrobe
+            </button>
+        </li>
+        <li class="nav-item">
+            <button class="nav-link" data-bs-toggle="tab" data-bs-target="#publicSwap" type="button">
+                Swap Items
+            </button>
+        </li>
+        <li class="nav-item">
+            <button class="nav-link" data-bs-toggle="tab" data-bs-target="#publicOOTD" type="button">
+                OOTD Posts
+            </button>
+        </li>
+        <li class="nav-item">
+            <button class="nav-link" data-bs-toggle="tab" data-bs-target="#reviews" type="button">
+                Reviews
+            </button>
+        </li>
+    </ul>
+</div>
+
+<!-- TAB CONTENT -->
+<div class="container tab-content mb-5">
+
+    <!-- PUBLIC WARDROBE -->
+    <div class="tab-pane fade show active" id="publicWardrobe">
+        <% if (publicItems && publicItems.length > 0) { %>
+            <div class="row g-3">
+                <% publicItems.forEach(item => { %>
+                    <div class="col-12 col-md-6 col-lg-4">
+                        <div class="item-card">
+
+                            <div class="status-pill">
+                                <span class="status-dot <%= item.is_for_swap === 1 ? '' : 'personal' %>"></span>
+                                <%= item.is_for_swap === 1 ? 'Ready to swap' : 'Personal only' %>
+                            </div>
+
+                            <div class="item-image-wrapper">
+                                <% if (item.image_url_1) { %>
+                                    <img src="<%= item.image_url_1 %>" class="item-image" alt="Item image">
+                                <% } else { %>
+                                    <div class="item-image d-flex align-items-center justify-content-center text-muted">
+                                        No image
+                                    </div>
+                                <% } %>
+                            </div>
+
+                            <div class="item-body">
+                                <div class="d-flex justify-content-between align-items-start mb-1">
+                                    <div>
+                                        <div class="item-title"><%= item.title || 'Untitled item' %></div>
+                                        <div class="item-brand"><%= item.brand_name || 'Unknown brand' %></div>
+                                    </div>
+                                    <% if (item.is_for_swap === 1) { %>
+                                        <span class="badge-swap">Swap</span>
+                                    <% } %>
+                                </div>
+
+                                <div class="chip-row">
+                                    <% if (item.category) { %>
+                                        <span class="chip chip--category"><%= item.category %></span>
+                                    <% } %>
+                                    <% if (item.size_label) { %>
+                                        <span class="chip chip--size">Size: <%= item.size_label %></span>
+                                    <% } %>
+                                </div>
+
+                                <% if (item.description) { %>
+                                    <div class="item-description">
+                                        <%= item.description %>
+                                    </div>
+                                <% } %>
+
+                                <div class="item-meta">
+                                    <% if (item.color) { %>
+                                        <div><strong>Color:</strong> <%= item.color %></div>
+                                    <% } %>
+                                    <% if (item.condition_grade) { %>
+                                        <div><strong>Condition:</strong> <%= item.condition_grade %></div>
+                                    <% } %>
+                                </div>
+                            </div>
+
+                            <div class="item-footer">
+                                <div><span class="badge-public">Public</span></div>
+                                <div class="text-muted">
+                                    Wardrobe item
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                <% }) %>
+            </div>
+        <% } else { %>
+            <div class="empty-state">
+                <h5>No public wardrobe items</h5>
+                <p>This user has not made any wardrobe items public yet.</p>
+            </div>
+        <% } %>
+    </div>
+
+    <!-- PUBLIC SWAP ITEMS -->
+    <div class="tab-pane fade" id="publicSwap">
+        <% if (publicSwapItems && publicSwapItems.length > 0) { %>
+            <div class="row g-3">
+                <% publicSwapItems.forEach(item => { %>
+                    <div class="col-12 col-md-6 col-lg-4">
+                        <div class="item-card">
+
+                            <div class="status-pill">
+                                <span class="status-dot"></span>
+                                Swap listing
+                            </div>
+
+                            <div class="item-image-wrapper">
+                                <% if (item.image_url_1) { %>
+                                    <img src="<%= item.image_url_1 %>" class="item-image" alt="Item image">
+                                <% } else { %>
+                                    <div class="item-image d-flex align-items-center justify-content-center text-muted">
+                                        No image
+                                    </div>
+                                <% } %>
+                            </div>
+
+                            <div class="item-body">
+                                <div class="d-flex justify-content-between align-items-start mb-1">
+                                    <div>
+                                        <div class="item-title"><%= item.title || 'Untitled item' %></div>
+                                        <div class="item-brand"><%= item.brand_name || 'Unknown brand' %></div>
+                                    </div>
+                                    <span class="badge-swap">Swap</span>
+                                </div>
+
+                                <div class="chip-row">
+                                    <% if (item.category) { %>
+                                        <span class="chip chip--category"><%= item.category %></span>
+                                    <% } %>
+                                    <% if (item.size_label) { %>
+                                        <span class="chip chip--size">Size: <%= item.size_label %></span>
+                                    <% } %>
+                                </div>
+
+                                <% if (item.description) { %>
+                                    <div class="item-description">
+                                        <%= item.description %>
+                                    </div>
+                                <% } %>
+
+                                <div class="item-meta">
+                                    <% if (item.color) { %>
+                                        <div><strong>Color:</strong> <%= item.color %></div>
+                                    <% } %>
+                                    <% if (item.condition_grade) { %>
+                                        <div><strong>Condition:</strong> <%= item.condition_grade %></div>
+                                    <% } %>
+                                </div>
+                            </div>
+
+                            <div class="item-footer">
+                                <div><span class="badge-public">Public</span></div>
+                                <div class="text-muted">
+                                    Swap ready
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                <% }) %>
+            </div>
+        <% } else { %>
+            <div class="empty-state">
+                <h5>No swap items</h5>
+                <p>This user has not listed any items for swap yet.</p>
+            </div>
+        <% } %>
+    </div>
+
+    <!-- PUBLIC OOTD POSTS -->
+    <div class="tab-pane fade" id="publicOOTD">
+        <% if (ootdPosts && ootdPosts.length > 0) { %>
+            <div class="row g-4">
+                <% ootdPosts.forEach(post => { %>
+                    <div class="col-12 col-md-6 col-lg-4">
+                        <div class="ootd-card">
+
+                            <a href="/ootd/<%= post.post_id %>" style="text-decoration: none; color: inherit; display: block;">
+                                <div class="ootd-image-wrapper">
+                                    <%
+                                        const imgList = [];
+                                        if (post.image_url_1) imgList.push(post.image_url_1);
+                                        if (post.image_url_2) imgList.push(post.image_url_2);
+                                        if (post.image_url_3) imgList.push(post.image_url_3);
+                                    %>
+
+                                    <% if (imgList.length === 0) { %>
+                                        <div class="ootd-image d-flex align-items-center justify-content-center text-muted">
+                                            No image
+                                        </div>
+                                    <% } else if (imgList.length === 1) { %>
+                                        <img src="<%= imgList[0] %>" alt="OOTD" class="ootd-image" style="cursor: pointer;">
+                                    <% } else { %>
+                                        <div id="publicOotdCarousel-<%= post.post_id %>" class="carousel slide w-100" data-bs-ride="carousel">
+                                            <div class="carousel-inner">
+                                                <% imgList.forEach((src, idx) => { %>
+                                                    <div class="carousel-item <%= idx === 0 ? 'active' : '' %>">
+                                                        <img src="<%= src %>" class="ootd-image d-block mx-auto" alt="OOTD image <%= idx + 1 %>" style="cursor: pointer;">
+                                                    </div>
+                                                <% }) %>
+                                            </div>
+                                            <button class="carousel-control-prev" type="button" data-bs-target="#publicOotdCarousel-<%= post.post_id %>" data-bs-slide="prev">
+                                                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                                <span class="visually-hidden">Previous</span>
+                                            </button>
+                                            <button class="carousel-control-next" type="button" data-bs-target="#publicOotdCarousel-<%= post.post_id %>" data-bs-slide="next">
+                                                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                                <span class="visually-hidden">Next</span>
+                                            </button>
+                                        </div>
+                                    <% } %>
+                                </div>
+                            </a>
+
+                            <div class="p-3">
+                                <a href="/ootd/<%= post.post_id %>" style="text-decoration: none; color: inherit;">
+                                    <% if (post.caption) { %>
+                                        <div class="ootd-caption"><%= post.caption %></div>
+                                    <% } else { %>
+                                        <div class="ootd-caption text-muted fst-italic">No caption</div>
+                                    <% } %>
+                                </a>
+                                <div class="mt-1" style="font-size:0.75rem;color:#6b7280;">
+                                    Visibility: <strong><%= post.visibility || 'public' %></strong>
+                                </div>
+                            </div>
+
+                            <div class="ootd-stats">
+                                <div class="ootd-stat-item">
+                                    <span>♥</span>
+                                    <span><strong><%= post.like_count || 0 %></strong> likes</span>
+                                </div>
+                                <div class="ootd-stat-item">
+                                    <span>💬</span>
+                                    <span><strong><%= post.comment_count || 0 %></strong> comments</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                <% }) %>
+            </div>
+        <% } else { %>
+            <div class="empty-state">
+                <h5>No OOTD posts</h5>
+                <p>This user has not shared any outfits yet.</p>
+            </div>
+        <% } %>
+    </div>
+
+    <!-- REVIEWS -->
+    <div class="tab-pane fade" id="reviews">
+        <div id="reviewsContainer">
+            <p class="text-muted">Loading reviews...</p>
+        </div>
+    </div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+    // Load reviews when tab is clicked
+    document.addEventListener('DOMContentLoaded', function() {
+        const reviewsTab = document.querySelector('[data-bs-target="#reviews"]');
+        if (reviewsTab) {
+            // Use Bootstrap's tab event
+            reviewsTab.addEventListener('shown.bs.tab', function() {
+                loadReviews(<%= profileUser.user_id %>);
+            });
+            
+            // Also add click event as fallback
+            reviewsTab.addEventListener('click', function() {
+                loadReviews(<%= profileUser.user_id %>);
+            });
+        }
+    });
+
+    function loadReviews(userId) {
+        console.log('Loading reviews for user:', userId);
+        fetch(`/api/users/${userId}/reviews`)
+            .then(response => response.json())
+            .then(data => {
+                console.log('Reviews data received:', data);
+                const container = document.getElementById('reviewsContainer');
+                if (data.success && data.reviews && data.reviews.length > 0) {
+                    let html = '<div class="row g-3">';
+                    data.reviews.forEach(review => {
+                        const stars = '⭐'.repeat(review.rating);
+                        html += `
+                            <div class="col-12">
+                                <div class="card border-0 shadow-sm">
+                                    <div class="card-body">
+                                        <div class="d-flex gap-2 align-items-start mb-2">
+                                            <img src="${review.profile_image_url || '/images/default-avatar.png'}" 
+                                                 alt="${review.username}" 
+                                                 style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover;">
+                                            <div class="flex-grow-1">
+                                                <strong>${review.username}</strong>
+                                                <div class="text-warning" style="font-size: 0.9rem;">${stars}</div>
+                                            </div>
+                                        </div>
+                                        <p class="card-text mb-1">${review.comment || 'No comment provided'}</p>
+                                        <small class="text-muted">${new Date(review.created_at).toLocaleDateString()}</small>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                    });
+                    html += '</div>';
+                    container.innerHTML = html;
+                } else {
+                    container.innerHTML = '<div class="empty-state"><h5>No reviews yet</h5><p>This user has not received any reviews.</p></div>';
+                }
+            })
+            .catch(error => {
+                console.error('Error loading reviews:', error);
+                document.getElementById('reviewsContainer').innerHTML = '<div class="alert alert-danger">Could not load reviews</div>';
+            });
+    }
+</script>
+
+<!-- AI Chatbot Widget -->
+<%- include('ai-chatbot-widget') %>
+
+</body>
+</html>
