@@ -41,8 +41,8 @@ exports.signup = (req, res) => {
   // profile image from multer (optional)
   let profileImageUrl = null;
   if (req.file) {
-    // app.js serves /images from public/images
-    profileImageUrl = '/images/' + req.file.filename;
+    // Cloudinary returns the full URL in req.file.path
+    profileImageUrl = req.file.path;
   }
 
   if (!username || !password || !email) {
@@ -3134,7 +3134,8 @@ exports.postEditProfile = (req, res) => {
   // Optional new profile image
   let profileImageUrl = null;
   if (req.file) {
-    profileImageUrl = '/images/' + req.file.filename;
+    // Cloudinary returns the full URL in req.file.path
+    profileImageUrl = req.file.path;
   }
 
   // Validate gender enum

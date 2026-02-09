@@ -85,8 +85,8 @@ exports.postApplySAHM = (req, res) => {
     return res.redirect('/sahm');
   }
 
-  // document_url uses /images because you store into public/images
-  const docUrl = req.file ? `/images/${req.file.filename}` : null;
+  // document_url uses Cloudinary URL from req.file.path
+  const docUrl = req.file ? req.file.path : null;
 
   if (!docUrl) {
     req.flash('error_msg', 'Please upload your resume + IC verification document (PDF/ZIP/JPG/PNG).');

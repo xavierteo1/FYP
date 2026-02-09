@@ -215,9 +215,9 @@ exports.uploadItem = (req, res) => {
         is_public
     } = req.body;
 
-    const img1 = req.files?.image1 ? `/images/${req.files.image1[0].filename}` : null;
-    const img2 = req.files?.image2 ? `/images/${req.files.image2[0].filename}` : null;
-    const img3 = req.files?.image3 ? `/images/${req.files.image3[0].filename}` : null;
+    const img1 = req.files?.image1 ? req.files.image1[0].path : null;
+    const img2 = req.files?.image2 ? req.files.image2[0].path : null;
+    const img3 = req.files?.image3 ? req.files.image3[0].path : null;
 
     if (!title || !brand || !category || !tags) {
         return res.send("Missing required fields.");
@@ -452,11 +452,11 @@ exports.updateItem = (req, res) => {
         //            else if remove ticked => NULL
         //            else keep existing
         const img1 = req.files?.image1
-            ? `/images/${req.files.image1[0].filename}`
+            ? req.files.image1[0].path
             : existing.image_url_1;
 
-        const newImg2 = req.files?.image2 ? `/images/${req.files.image2[0].filename}` : null;
-        const newImg3 = req.files?.image3 ? `/images/${req.files.image3[0].filename}` : null;
+        const newImg2 = req.files?.image2 ? req.files.image2[0].path : null;
+        const newImg3 = req.files?.image3 ? req.files.image3[0].path : null;
 
         const img2 = newImg2 ? newImg2 : (wantsRemove2 ? null : existing.image_url_2);
         const img3 = newImg3 ? newImg3 : (wantsRemove3 ? null : existing.image_url_3);

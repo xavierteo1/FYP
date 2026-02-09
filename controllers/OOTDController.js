@@ -212,13 +212,13 @@ exports.createOotdPost = (req, res) => {
   let image_url_3 = body.image_url_3 ? body.image_url_3.trim() : null;
 
   const files = req.files || {};
-  const file1 = files.image1 && files.image1[0] ? files.image1[0].filename : null;
-  const file2 = files.image2 && files.image2[0] ? files.image2[0].filename : null;
-  const file3 = files.image3 && files.image3[0] ? files.image3[0].filename : null;
+  const file1 = files.image1 && files.image1[0] ? files.image1[0].path : null;
+  const file2 = files.image2 && files.image2[0] ? files.image2[0].path : null;
+  const file3 = files.image3 && files.image3[0] ? files.image3[0].path : null;
 
-  const img1 = file1 ? `/images/${file1}` : image_url_1;
-  const img2 = file2 ? `/images/${file2}` : image_url_2;
-  const img3 = file3 ? `/images/${file3}` : image_url_3;
+  const img1 = file1 ? file1 : image_url_1;
+  const img2 = file2 ? file2 : image_url_2;
+  const img3 = file3 ? file3 : image_url_3;
 
   const errors = [];
   if (!img1 && !img2 && !img3) {
