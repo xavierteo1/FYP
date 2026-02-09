@@ -106,6 +106,7 @@ exports.postSwipe = (req, res) => {
   const userId = req.session.user.user_id;
   const itemId = Number(req.body.item_id);
   const decision = (req.body.decision || '').toLowerCase();
+  const isLike = decision === 'like' ? 1 : 0;
 
   if (!itemId || !['like', 'pass'].includes(decision)) {
     req.flash('error_msg', 'Invalid swipe.');
@@ -133,11 +134,11 @@ exports.postSwipe = (req, res) => {
     }
 
     const insertSql = `
-      INSERT INTO swap_swipes (swiper_user_id, item_id, decision)
+      INSERT INTO swap_swipes (swiper_user_id, item_id, is_like)
       VALUES (?, ?, ?)
     `;
 
-    db.query(insertSql, [userId, itemId, decision], (errIns) => {
+    db.query(insertSql, [userId, itemId, isLike], (errIns) => {
       if (errIns) {
         console.error('Swipe insert error:', errIns);
         req.flash('error_msg', 'Failed to save swipe.');
