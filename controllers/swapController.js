@@ -174,7 +174,7 @@ exports.getIncomingLikes = (req, res) => {
     FROM swap_swipes ss
     JOIN clothing_items ci ON ss.item_id = ci.item_id
     JOIN users liker ON ss.swiper_user_id = liker.user_id
-    WHERE ss.decision = 'like'
+    WHERE ss.is_like = 1
       AND ci.owner_user_id = ?
     ORDER BY ss.created_at DESC
   `;
@@ -225,7 +225,7 @@ exports.getChooseCounterItem = (req, res) => {
     JOIN clothing_items ci ON ss.item_id = ci.item_id
     JOIN users liker ON ss.swiper_user_id = liker.user_id
     WHERE ss.swipe_id = ?
-      AND ss.decision = 'like'
+      AND ss.is_like = 1
     LIMIT 1
   `;
 
@@ -320,7 +320,7 @@ exports.postAcceptLike = (req, res) => {
       FROM swap_swipes ss
       JOIN clothing_items ci ON ss.item_id = ci.item_id
       WHERE ss.swipe_id = ?
-        AND ss.decision = 'like'
+        AND ss.is_like = 1
       LIMIT 1
     `;
 
@@ -482,7 +482,7 @@ exports.postRejectLike = (req, res) => {
     FROM swap_swipes ss
     JOIN clothing_items ci ON ss.item_id = ci.item_id
     WHERE ss.swipe_id = ?
-      AND ss.decision = 'like'
+      AND ss.is_like = 1
       AND ci.owner_user_id = ?
   `;
 
