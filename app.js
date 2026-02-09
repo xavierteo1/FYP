@@ -7,6 +7,8 @@ const flash = require('connect-flash');
 const path = require('path');
 const bodyParser = require('body-parser');
 const multer = require('multer');
+const cloudinary = require('cloudinary').v2;
+const { CloudinaryStorage } = require('multer-storage-cloudinary');
 require('dotenv').config();
 
 // DB + Controllers
@@ -59,27 +61,33 @@ app.use(
 app.use(flash());
 
 // ============================================
-// MULTER SETUP (Uploads to public/images)
+// CLOUDINARY SETUP
 // ============================================
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, 'public/images');
-  },
-  filename: function (req, file, cb) {
-    const uniqueName = Date.now() + '-' + Math.round(Math.random() * 1e9);
-    cb(null, uniqueName + path.extname(file.originalname));
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET
+});
+
+// ============================================
+// MULTER SETUP (Uploads to Cloudinary)
+// ============================================
+const storage = new CloudinaryStorage({
+  cloudinary: cloudinary,
+  params: {
+    folder: 'fyp_clothing_swap',
+    resource_type: 'auto'
   }
 });
+
 const upload = multer({ storage });
 
 // SAHM doc upload (PDF/ZIP/IMG)
-const sahmDocStorage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, 'public/images');
-  },
-  filename: function (req, file, cb) {
-    const uniqueName = Date.now() + '-' + Math.round(Math.random() * 1e9);
-    cb(null, uniqueName + path.extname(file.originalname).toLowerCase());
+const sahmDocStorage = new CloudinaryStorage({
+  cloudinary: cloudinary,
+  params: {
+    folder: 'fyp_sahm_documents',
+    resource_type: 'auto'
   }
 });
 
